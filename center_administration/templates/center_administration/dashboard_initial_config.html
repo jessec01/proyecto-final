@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración Inicial del Centro</title>
+    <link rel="stylesheet" href="{% static 'center_administration/css/dashboard_initial_config.css' %}" />
+    <script src="{% static 'center_administration/js/dashboard_initial_config.js' %}" defer></script>
+</head>
+<body>
+    <header>
+        <p class="section-label">Configuración guiada</p>
+        <h1>Activa tu centro en cuatro pasos</h1>
+        <p>
+            Completa cada bloque para registrar tu perfil, los datos del centro y las reglas maestras de pago y paquetes.
+            Nada se envía hasta que pulses "Publicar configuración".
+        </p>
+    </header>
+
+    <section class="wizard-shell">
+        <aside class="timeline" aria-label="Progreso">
+            <h2>Progreso</h2>
+            <div class="step-pill active" data-step-indicator="0">
+                <span>01</span>
+                <div>
+                    <strong>Perfil Directivo</strong>
+                    <small>Presenta quién administra el centro.</small>
+                </div>
+            </div>
+            <div class="step-pill" data-step-indicator="1">
+                <span>02</span>
+                <div>
+                    <strong>Datos del Centro</strong>
+                    <small>Identidad física y digital del local.</small>
+                </div>
+            </div>
+            <div class="step-pill" data-step-indicator="2">
+                <span>03</span>
+                <div>
+                    <strong>Reglas de Pago</strong>
+                    <small>Condiciones, descuentos y canal aplicado.</small>
+                </div>
+            </div>
+            <div class="step-pill" data-step-indicator="3">
+                <span>04</span>
+                <div>
+                    <strong>Reglas de Paquetes</strong>
+                    <small>Accesos, promociones y vigencia.</small>
+                </div>
+            </div>
+            <div class="summary-panel" id="summaryPanel">
+                <div class="status-chip">Borrador vivo</div>
+                <p class="summary-note">
+                    Los datos se almacenan en memoria del navegador y se enviarán como una única transacción.
+                </p>
+            </div>
+        </aside>
+
+        <div class="wizard-panel">
+            <!-- Step 1 -->
+            <div class="wizard-content active" data-step="0">
+                <div class="section-label">Paso 1</div>
+                <h2 class="section-title">Perfil del Center Administrator</h2>
+                <form class="wizard-form" data-step-form>
+                    <div data-entity="center_administrator" class="grid-two">
+                        <div>
+                            <label for="adminFirstName">Nombre</label>
+                            <input id="adminFirstName" name="first_name" placeholder="María" required />
+                        </div>
+                        <div>
+                            <label for="adminLastName">Apellido</label>
+                            <input id="adminLastName" name="last_name" placeholder="Ortiz" required />
+                        </div>
+                        <div>
+                            <label for="adminEmail">Correo de contacto</label>
+                            <input id="adminEmail" name="email" type="email" placeholder="admin@centro.com" required />
+                        </div>
+                        <div>
+                            <label for="adminPhone">Teléfono directo</label>
+                            <input id="adminPhone" name="phone" placeholder="+58 000 000" />
+                        </div>
+                        <div>
+                            <label for="adminRole">Rol en la organización</label>
+                            <input id="adminRole" name="role" placeholder="Directora General" />
+                        </div>
+                        <div>
+                            <label for="adminYears">Años de experiencia</label>
+                            <input id="adminYears" name="experience_years" type="number" min="0" data-type="number" placeholder="5" />
+                        </div>
+                    </div>
+                    <div data-entity="center_administrator">
+                        <label for="adminBio">Mensaje de bienvenida</label>
+                        <textarea id="adminBio" name="statement" placeholder="Comparte la visión del centro y qué esperas de la comunidad."></textarea>
+                    </div>
+                    <div class="note-card">
+                        Esta información nutre la ficha pública del centro y ayuda a los clientes a identificar quién autoriza la operación.
+                    </div>
+                </form>
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" disabled>Anterior</button>
+                    <button type="button" class="btn-primary" data-next>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="wizard-content" data-step="1">
+                <div class="section-label">Paso 2</div>
+                <h2 class="section-title">Datos base del yoga center</h2>
+                <form class="wizard-form" data-step-form>
+                    <div data-entity="center" class="grid-two">
+                        <div>
+                            <label for="centerCode">Código interno</label>
+                            <input id="centerCode" name="code" maxlength="10" placeholder="ZEN0000001" required />
+                        </div>
+                        <div>
+                            <label for="centerName">Nombre comercial</label>
+                            <input id="centerName" name="name" placeholder="Yogui Flow Altamira" required />
+                        </div>
+                        <div>
+                            <label for="centerAddress">Dirección</label>
+                            <input id="centerAddress" name="address" placeholder="Av. Libertador, nivel mezzanina" required />
+                        </div>
+                        <div>
+                            <label for="centerPhone">Teléfono</label>
+                            <input id="centerPhone" name="phone" placeholder="+58 000 000" required />
+                        </div>
+                        <div>
+                            <label for="centerEmail">Correo del centro</label>
+                            <input id="centerEmail" name="email" type="email" placeholder="contacto@centroyoga.com" required />
+                        </div>
+                        <div>
+                            <label for="centerCapacity">Capacidad máxima</label>
+                            <input id="centerCapacity" name="capacity" type="number" min="1" data-type="number" placeholder="45" required />
+                        </div>
+                    </div>
+                    <div data-entity="center">
+                        <label for="centerDescription">Descripción breve</label>
+                        <textarea id="centerDescription" name="description" placeholder="Describe ambiente, estilo de clases, políticas de ingreso." required></textarea>
+                    </div>
+                    <div class="note-card">
+                        Consejo: usa códigos únicos para identificar el centro dentro de la plataforma (10 caracteres alfanuméricos).
+                    </div>
+                </form>
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" data-prev>Anterior</button>
+                    <button type="button" class="btn-primary" data-next>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="wizard-content" data-step="2">
+                <div class="section-label">Paso 3</div>
+                <h2 class="section-title">Regla troncal y condiciones de pago</h2>
+                <form class="wizard-form" data-step-form>
+                    <div data-entity="rules_center">
+                        <h3 class="section-subtitle">Definición de la regla maestra</h3>
+                        <div class="grid-two">
+                            <div>
+                                <label for="ruleName">Nombre de la regla</label>
+                                <input id="ruleName" name="name" placeholder="Pagos digitales Zinli" required />
+                            </div>
+                            <div>
+                                <label for="ruleActive">Activa</label>
+                                <select id="ruleActive" name="active">
+                                    <option value="true" selected>Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="ruleAction">Acción</label>
+                                <input id="ruleAction" name="action" placeholder="Aplicar descuento automático" required />
+                            </div>
+                            <div>
+                                <label for="ruleTarget">Objetivo</label>
+                                <input id="ruleTarget" name="action_target" placeholder="Pagos confirmados por Zinli" required />
+                            </div>
+                        </div>
+                        <label for="ruleDescription" class="mt-1">Descripción</label>
+                        <textarea id="ruleDescription" name="description" placeholder="Explica cuándo se activa la regla, qué usuarios abarca y qué restricciones tiene." required></textarea>
+                    </div>
+                    <div data-entity="rules_payments" class="section-block">
+                        <h3 class="section-subtitle">Parámetros específicos de pago</h3>
+                        <div class="grid-two">
+                            <div>
+                                <label for="discountPayment">Porcentaje de descuento</label>
+                                <input id="discountPayment" name="discoint_porcentage" type="number" min="0" max="100" step="0.01" data-type="float" placeholder="5" required />
+                            </div>
+                            <div>
+                                <label for="comissionPayment">Porcentaje de comisión</label>
+                                <input id="comissionPayment" name="comission_porcentage" type="number" min="0" max="100" step="0.01" data-type="float" placeholder="2" required />
+                            </div>
+                        </div>
+                        <div class="note-card">
+                            Vincula esta regla al medio de pago real (Zinli, Stripe, efectivo). Los paquetes heredarán el mismo identificador.
+                        </div>
+                    </div>
+                </form>
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" data-prev>Anterior</button>
+                    <button type="button" class="btn-primary" data-next>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="wizard-content" data-step="3">
+                <div class="section-label">Paso 4</div>
+                <h2 class="section-title">Reglas de paquetes y accesos</h2>
+                <form class="wizard-form" data-step-form>
+                    <div data-entity="rules_packages">
+                        <div class="grid-two">
+                            <div>
+                                <label for="packagePromo">% de promoción sobre tarifa</label>
+                                <input id="packagePromo" name="promotion_porcentage" type="number" min="0" max="100" step="0.01" data-type="float" placeholder="10" required />
+                            </div>
+                            <div>
+                                <label for="packageAccess">Duración de acceso (días)</label>
+                                <input id="packageAccess" name="access_duration" type="number" min="1" data-type="number" placeholder="30" required />
+                            </div>
+                        </div>
+                        <label for="packageNotes">Notas internas</label>
+                        <textarea id="packageNotes" name="notes" placeholder="Ej. El paquete heredará la regla 'Pagos digitales Zinli'." ></textarea>
+                    </div>
+                </form>
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" data-prev>Anterior</button>
+                    <button type="button" class="btn-submit" data-submit>Publicar configuración</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="toast" id="toast" role="status"></div>
+</body>
+</html>

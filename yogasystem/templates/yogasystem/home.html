@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Yoga Centers — Plataforma de registros</title>
+        <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <div class="brand">
+            <a href="/">YogaCenters</a>
+        </div>
+        <nav class="nav">
+            <!-- Botón superior: sólo acceso (el registro queda en las CTAs principales) -->
+            <button class="btn btn-ghost" type="button" data-href="/center_administrator/login/">Iniciar sesión</button>
+        </nav>
+        <div class="mode-switch" role="tablist" aria-label="Modo de acceso" style="margin-left:16px;">
+            <button class="btn btn-ghost mode-btn" type="button" data-mode="user" aria-pressed="true">Modo Usuario</button>
+            <button class="btn btn-ghost mode-btn" type="button" data-mode="company" aria-pressed="false">Modo Empresa</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container hero-inner">
+            <div class="hero-copy">
+                <h1>Atrae alumnos a tu centro de yoga</h1>
+                <p class="lead">Registra tu empresa, publica clases y permite que los usuarios te encuentren fácilmente.</p>
+                    <div class="hero-ctas">
+                        <!-- CTAs por modo: `data-mode-cta` controla visibilidad -->
+                        <button class="btn btn-primary" type="button" data-mode-cta data-mode="company" data-href="/center_administrator/register/">Registrarse</button>
+                        <button class="btn btn-ghost" type="button" data-mode-cta data-mode="company" data-href="/center_administrator/login/">Acceder</button>
+
+                        <button class="btn btn-primary" type="button" data-mode-cta data-mode="user" data-href="/yogui/register/">Registrarme (Usuario)</button>
+                        <button class="btn btn-ghost" type="button" data-mode-cta data-mode="user" data-href="/yogui/login/">Iniciar sesión (Usuario)</button>
+                    </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+                <!-- Imagen o ilustración SVG: reemplazar por una imagen real en producción -->
+                <div class="illustration">🧘‍♀️</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Lo esencial</h2>
+            <div class="grid">
+                <article class="card">
+                    <h3>Ficha de centro</h3>
+                    <p>Describe tu espacio, horarios, precios y fotos; los usuarios te encontrarán con filtros.</p>
+                </article>
+                <article class="card">
+                    <h3>Gestión de clases</h3>
+                    <p>Publica clases y horarios; los interesados podrán reservar o contactar.</p>
+                </article>
+                <article class="card">
+                    <h3>Opiniones y confianza</h3>
+                    <p>Recibe valoraciones y construye reputación entre la comunidad local.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <h2>Cómo empezar</h2>
+            <ol class="steps">
+                <li>
+                    <strong>Registrarte:</strong> crea una cuenta y completa la información del centro.
+                </li>
+                <li>
+                    <strong>Publicar clases:</strong> añade horarios y tipos de clases para que los usuarios vean tu oferta.
+                </li>
+                <li>
+                    <strong>Conectar:</strong> recibe reservas y mensajes de estudiantes interesados.
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="testimonial">
+        <div class="container">
+            <blockquote>
+                "Nuestra sala se llenó en semanas tras registrarnos aquí." — Centro ejemplo
+            </blockquote>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-inner">
+        <div>© {{ current_year|default:2026 }} YogaCenters</div>
+        <div class="links">
+            <a href="/privacy/">Política de privacidad</a>
+            <a href="/terms/">Términos</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Cargar los scripts estáticos correctos -->
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/theme.js' %}"></script>
+
+<script>
+(function(){
+    const MODE_KEY = 'yc_mode';
+    const defaultMode = 'user';
+    const buttons = document.querySelectorAll('.mode-btn');
+    const ctas = document.querySelectorAll('[data-mode-cta]');
+
+    function setMode(mode){
+        document.documentElement.setAttribute('data-mode', mode);
+        try{ localStorage.setItem(MODE_KEY, mode); }catch(e){}
+        buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === mode));
+        ctas.forEach(el => { el.style.display = (el.dataset.mode === mode ? '' : 'none'); });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        buttons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+        // Delegado para botones con `data-href`
+        document.body.addEventListener('click', function(e){
+            const btn = e.target.closest('[data-href]');
+            if(!btn) return;
+            const href = btn.getAttribute('data-href');
+            if(href) window.location.href = href;
+        });
+
+        const saved = (function(){ try{ return localStorage.getItem(MODE_KEY); }catch(e){return null;} })() || defaultMode;
+        setMode(saved);
+    });
+})();
+</script>
+
+<!--
+    NOTAS para desarrolladores:
+    - Los formularios usan method="get" y acciones estáticas (/register/, /login/).
+        Ajustar `action` a las rutas reales del backend si difieren.
+    - No se tocan vistas, URLs ni componentes del backend.
+    - En `static/js/main.js` sugerimos añadir validación adicional, interacción accesible,
+        analytics y mejoras progresivas. Ver el archivo para más comentarios.
+-->
+
+</body>
+</html>
