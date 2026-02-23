@@ -42,4 +42,11 @@ class CenterAdminTokenSerializer(TokenObtainPairSerializer):
         # Una vez validada la contraseña, verificamos el rol
         if not self.user.is_center_administrator:
             raise AuthenticationFailed('No tienes permisos de Administrador de Centro para iniciar sesión aquí.')
+            
+        # Determinar si tiene un perfil activo para enviarlo al dashboard o a la configuración inicial
+        if hasattr(self.user, 'centeradministrator') and getattr(self.user.centeradministrator, 'is_active_profile', False):
+            data['redirect_url'] = '/center_administrator/dashboard/'
+        else:
+            data['redirect_url'] = '/center_administrator/dashboard/config/'
+            
         return data

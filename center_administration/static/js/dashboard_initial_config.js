@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const indicators = document.querySelectorAll('[data-step-indicator]');
     const summaryPanel = document.getElementById('summaryPanel');
     const toast = document.getElementById('toast');
-    const submitUrl = '/center-administration/read-dashboard-initial-config/procesar-cadena/';
+    const submitUrl = '/center_administrator/api/dashboard/config/initial/';
     let currentStep = 0;
     const wizardData = {};
 
@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
             wizardData[entity] = wizardData[entity] || {};
             group.querySelectorAll('input, select, textarea').forEach((field) => {
                 if (!field.name) return;
+                // Evitamos enviar archivos binarios u originar strings "C:\fakepath..." que rompan DRF.
+                if (field.type === 'file') return;
                 wizardData[entity][field.name] = normalizeValue(field);
             });
         });
@@ -79,10 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.querySelector('[data-submit]').addEventListener('click', async () => {
-        const stepEl = steps[currentStep];
-        const form = stepEl.querySelector('form');
-        if (form && !form.reportValidity()) return;
-        persistStepData(stepEl);
+        let allValid = true;
+
+        // Validación global estricta: chequeamos que ningún formulario atrás se haya saltado o vaciado
+        for (let i = 0; i < steps.length; i++) {
+            const f = steps[i].querySelector('form');
+            if (f && !f.checkValidity()) {
+                allValid = false;
+                showStep(i); // Regresamos visualmente al usuario al paso faltante
+                f.reportValidity(); // Mostramos el globo rojo indicando qué llenar
+                break;
+            }
+        }
+
+        if (!allValid) return; // Si algún campo en cualquier paso falla, se aborta el envío
+
+        // Guardamos explícitamente los datos del último paso
+        persistStepData(steps[currentStep]);
 
         try {
             const response = await fetch(submitUrl, {
@@ -95,12 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const payload = await response.json().catch(() => ({}));
             if (!response.ok) {
-                throw new Error(payload.error || 'No se pudo completar la configuración.');
+                let errorMsg = 'No se pudo completar la configuración.';
+                if (payload.error) {
+                    errorMsg = payload.error;
+                } else if (Object.keys(payload).length > 0) {
+                    // Convertimos errores de DRF {"campo": ["Error"]} a un solo string
+                    errorMsg = Object.entries(payload).map(([k, v]) => `${k}: ${v}`).join(' | ');
+                }
+                throw new Error(errorMsg);
             }
-            setToast('Configuración registrada. Redirigiendo al dashboard...', 'success');
+            setToast('¡Configuración registrada exitosamente! Redirigiendo a tu nuevo Panel de Control...', 'success');
             setTimeout(() => {
-                window.location.href = '/center-administration/dashboard/';
-            }, 1800);
+                window.location.href = '/center_administrator/dashboard/';
+            }, 3500);
         } catch (error) {
             setToast(error.message, 'error');
         }

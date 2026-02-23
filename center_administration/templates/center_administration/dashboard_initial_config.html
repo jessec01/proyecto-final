@@ -1,19 +1,22 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Configuración Inicial del Centro</title>
-    <link rel="stylesheet" href="{% static 'center_administration/css/dashboard_initial_config.css' %}" />
-    <script src="{% static 'center_administration/js/dashboard_initial_config.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard_initial_config.css' %}?v={% now 'U' %}" />
+    <script src="{% static 'js/dashboard_initial_config.js' %}?v={% now 'U' %}" defer></script>
 </head>
+
 <body>
     <header>
         <p class="section-label">Configuración guiada</p>
         <h1>Activa tu centro en cuatro pasos</h1>
         <p>
-            Completa cada bloque para registrar tu perfil, los datos del centro y las reglas maestras de pago y paquetes.
+            Completa cada bloque para registrar tu perfil, los datos del centro y las reglas maestras de pago y
+            paquetes.
             Nada se envía hasta que pulses "Publicar configuración".
         </p>
     </header>
@@ -65,36 +68,28 @@
                 <form class="wizard-form" data-step-form>
                     <div data-entity="center_administrator" class="grid-two">
                         <div>
-                            <label for="adminFirstName">Nombre</label>
-                            <input id="adminFirstName" name="first_name" placeholder="María" required />
-                        </div>
-                        <div>
-                            <label for="adminLastName">Apellido</label>
-                            <input id="adminLastName" name="last_name" placeholder="Ortiz" required />
-                        </div>
-                        <div>
-                            <label for="adminEmail">Correo de contacto</label>
-                            <input id="adminEmail" name="email" type="email" placeholder="admin@centro.com" required />
-                        </div>
-                        <div>
-                            <label for="adminPhone">Teléfono directo</label>
-                            <input id="adminPhone" name="phone" placeholder="+58 000 000" />
+                            <label for="adminPhoto">Foto de perfil</label>
+                            <input id="adminPhoto" name="photo_profile" type="file" accept=".jpg,.jpeg,.png" required />
                         </div>
                         <div>
                             <label for="adminRole">Rol en la organización</label>
-                            <input id="adminRole" name="role" placeholder="Directora General" />
+                            <input id="adminRole" name="role" placeholder="Directora General" required />
                         </div>
                         <div>
                             <label for="adminYears">Años de experiencia</label>
-                            <input id="adminYears" name="experience_years" type="number" min="0" data-type="number" placeholder="5" />
+                            <input id="adminYears" name="experience_years" type="number" min="0" data-type="number"
+                                placeholder="5" required />
                         </div>
                     </div>
-                    <div data-entity="center_administrator">
+                    <div data-entity="center_administrator" class="mt-1">
                         <label for="adminBio">Mensaje de bienvenida</label>
-                        <textarea id="adminBio" name="statement" placeholder="Comparte la visión del centro y qué esperas de la comunidad."></textarea>
+                        <textarea id="adminBio" name="statement"
+                            placeholder="Comparte la visión del centro y qué esperas de la comunidad."
+                            required></textarea>
                     </div>
                     <div class="note-card">
-                        Esta información nutre la ficha pública del centro y ayuda a los clientes a identificar quién autoriza la operación.
+                        Tu perfil de administrador será enlazado y activado automáticamente al finalizar esta
+                        configuración. Pulsa "Siguiente" para continuar.
                     </div>
                 </form>
                 <div class="nav-buttons">
@@ -119,7 +114,8 @@
                         </div>
                         <div>
                             <label for="centerAddress">Dirección</label>
-                            <input id="centerAddress" name="address" placeholder="Av. Libertador, nivel mezzanina" required />
+                            <input id="centerAddress" name="address" placeholder="Av. Libertador, nivel mezzanina"
+                                required />
                         </div>
                         <div>
                             <label for="centerPhone">Teléfono</label>
@@ -127,19 +123,28 @@
                         </div>
                         <div>
                             <label for="centerEmail">Correo del centro</label>
-                            <input id="centerEmail" name="email" type="email" placeholder="contacto@centroyoga.com" required />
+                            <input id="centerEmail" name="email" type="email" placeholder="contacto@centroyoga.com"
+                                required />
                         </div>
                         <div>
                             <label for="centerCapacity">Capacidad máxima</label>
-                            <input id="centerCapacity" name="capacity" type="number" min="1" data-type="number" placeholder="45" required />
+                            <input id="centerCapacity" name="capacity" type="number" min="1" data-type="number"
+                                placeholder="45" required />
+                        </div>
+                        <div>
+                            <label for="centerPhoto">Foto del centro</label>
+                            <input id="centerPhoto" name="photo" type="file" accept=".jpg,.jpeg,.png" />
                         </div>
                     </div>
                     <div data-entity="center">
                         <label for="centerDescription">Descripción breve</label>
-                        <textarea id="centerDescription" name="description" placeholder="Describe ambiente, estilo de clases, políticas de ingreso." required></textarea>
+                        <textarea id="centerDescription" name="description"
+                            placeholder="Describe ambiente, estilo de clases, políticas de ingreso."
+                            required></textarea>
                     </div>
                     <div class="note-card">
-                        Consejo: usa códigos únicos para identificar el centro dentro de la plataforma (10 caracteres alfanuméricos).
+                        Consejo: usa códigos únicos para identificar el centro dentro de la plataforma (10 caracteres
+                        alfanuméricos).
                     </div>
                 </form>
                 <div class="nav-buttons">
@@ -167,32 +172,29 @@
                                     <option value="false">No</option>
                                 </select>
                             </div>
-                            <div>
-                                <label for="ruleAction">Acción</label>
-                                <input id="ruleAction" name="action" placeholder="Aplicar descuento automático" required />
-                            </div>
-                            <div>
-                                <label for="ruleTarget">Objetivo</label>
-                                <input id="ruleTarget" name="action_target" placeholder="Pagos confirmados por Zinli" required />
-                            </div>
                         </div>
                         <label for="ruleDescription" class="mt-1">Descripción</label>
-                        <textarea id="ruleDescription" name="description" placeholder="Explica cuándo se activa la regla, qué usuarios abarca y qué restricciones tiene." required></textarea>
+                        <textarea id="ruleDescription" name="description"
+                            placeholder="Explica cuándo se activa la regla, qué usuarios abarca y qué restricciones tiene."
+                            required></textarea>
                     </div>
                     <div data-entity="rules_payments" class="section-block">
                         <h3 class="section-subtitle">Parámetros específicos de pago</h3>
                         <div class="grid-two">
                             <div>
                                 <label for="discountPayment">Porcentaje de descuento</label>
-                                <input id="discountPayment" name="discoint_porcentage" type="number" min="0" max="100" step="0.01" data-type="float" placeholder="5" required />
+                                <input id="discountPayment" name="discoint_porcentage" type="number" min="0" max="100"
+                                    step="0.01" data-type="float" placeholder="5" required />
                             </div>
                             <div>
                                 <label for="comissionPayment">Porcentaje de comisión</label>
-                                <input id="comissionPayment" name="comission_porcentage" type="number" min="0" max="100" step="0.01" data-type="float" placeholder="2" required />
+                                <input id="comissionPayment" name="comission_porcentage" type="number" min="0" max="100"
+                                    step="0.01" data-type="float" placeholder="2" required />
                             </div>
                         </div>
                         <div class="note-card">
-                            Vincula esta regla al medio de pago real (Zinli, Stripe, efectivo). Los paquetes heredarán el mismo identificador.
+                            Vincula esta regla al medio de pago real (Zinli, Stripe, efectivo). Los paquetes heredarán
+                            el mismo identificador.
                         </div>
                     </div>
                 </form>
@@ -211,15 +213,15 @@
                         <div class="grid-two">
                             <div>
                                 <label for="packagePromo">% de promoción sobre tarifa</label>
-                                <input id="packagePromo" name="promotion_porcentage" type="number" min="0" max="100" step="0.01" data-type="float" placeholder="10" required />
+                                <input id="packagePromo" name="promotion_porcentage" type="number" min="0" max="100"
+                                    step="0.01" data-type="float" placeholder="10" required />
                             </div>
                             <div>
                                 <label for="packageAccess">Duración de acceso (días)</label>
-                                <input id="packageAccess" name="access_duration" type="number" min="1" data-type="number" placeholder="30" required />
+                                <input id="packageAccess" name="access_duration" type="number" min="1"
+                                    data-type="number" placeholder="30" required />
                             </div>
                         </div>
-                        <label for="packageNotes">Notas internas</label>
-                        <textarea id="packageNotes" name="notes" placeholder="Ej. El paquete heredará la regla 'Pagos digitales Zinli'." ></textarea>
                     </div>
                 </form>
                 <div class="nav-buttons">
@@ -232,4 +234,5 @@
 
     <div class="toast" id="toast" role="status"></div>
 </body>
+
 </html>

@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from center_administration.views import  DasboardInitialConfigView, LogoutView, ReadDashboardInitialConfigView
 
-from .views import RegisterUserView, ReadFormView, LoginView
+from .views import RegisterUserView, ReadFormView, LoginView, CenterAdminDashboardView
 from .views import CenterAdminLoginView
 urlpatterns = [
     #registro usuario
@@ -26,15 +26,15 @@ urlpatterns = [
     #registro perfil template view
     
    #url para mostrar el dashboard del center administrator
+    path('dashboard/', CenterAdminDashboardView.as_view(), name='dashboard_main'),
     path('dashboard/config/', DasboardInitialConfigView.as_view(), name='center_admin_dashboard'),
     #url para mostrar el formulario de registro de perfil del center administrator,del centro de yoga
     #reglas centro, tipos de reglas de paquetes, reglas de pagos, etc.
     path('api/dashboard/config/initial/', ReadDashboardInitialConfigView.as_view({'post': 'procesar_cadena'}), name='dashboard_initial_config'),
 
     #url para cerrar sesión del center administrator
-    path('logout/', LogoutView.as_view(), name='logout')
+    path('logout/', LogoutView.as_view(), name='logout'),
     # Otras URLs para el dashboard del center administrator, gestión de centros, etc.
-    #path('dashboard/config/', DashboardInitialConfigView.as_view(), name='dashboard_initial_config'),
 
     #read form dashboard template view
    

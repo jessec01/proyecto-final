@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.refresh) localStorage.setItem("refresh", data.refresh);
           } catch (e) { }
         }
-        window.location.href = resolve_redirect_path();
+        window.location.href = data.redirect_url || resolve_redirect_path();
       })
       .catch((err) => {
         show_form_error(err.message || "Email o contraseña inválidos.");
