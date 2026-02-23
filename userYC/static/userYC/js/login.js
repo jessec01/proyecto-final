@@ -225,7 +225,14 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         }
         if (response.status === 401 || response.status === 405) {
-          throw new Error("Email o contraseña inválidos.");
+          let errorMsg = "Email o contraseña inválidos.";
+          try {
+            const errData = await response.json();
+            if (errData && errData.detail) {
+              errorMsg = errData.detail;
+            }
+          } catch (e) { }
+          throw new Error(errorMsg);
         }
         throw new Error("No se pudo iniciar sesión. Intenta de nuevo.");
       })
@@ -234,12 +241,13 @@ document.addEventListener("DOMContentLoaded", function () {
           try {
             localStorage.setItem("access", data.access);
             if (data.refresh) localStorage.setItem("refresh", data.refresh);
-          } catch (e) {}
+          } catch (e) { }
         }
         window.location.href = resolve_redirect_path();
       })
       .catch((err) => {
         show_form_error(err.message || "Email o contraseña inválidos.");
+        console.log(err.message);
       });
   });
 });

@@ -10,10 +10,9 @@ class UserYCSerializer(serializers.ModelSerializer):
     is_yogui = serializers.BooleanField(default=False,write_only=True)
     class Meta:
         model = User    
-        fields = ['username','email','first_name','last_name','phone','password','confirmation_password']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['username','email','first_name','last_name','phone',
+        'password','is_yogui','is_instructor','is_center_administrator','confirmation_password']
+       
     
     def validate_username(self,value_username):
         if self.Meta.model.objects.filter(username=value_username).exists():

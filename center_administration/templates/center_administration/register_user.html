@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,18 +8,20 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'userYC/css/register.css' %}">
 </head>
+
 <body>
   <main class="container">
     <h1>Crear cuenta - Centro</h1>
     <p class="hint">Rellena los datos para crear una cuenta de centro/administrador.</p>
 
-    <form id="registerForm" method="post" action="#">
+    <form id="registerForm" method="post" action="{% url 'read_form' %}" data-success-url="{% url 'login' %}">
       {% csrf_token %}
       <label for="email">Correo electrónico</label>
       <input id="email" name="email" type="email" placeholder="centro@ejemplo.com" required>
 
       <label for="username">Nombre de usuario</label>
-      <input id="username" name="username" type="text" placeholder="usuario_centro" minlength="4" maxlength="16" required>
+      <input id="username" name="username" type="text" placeholder="usuario_centro" minlength="4" maxlength="16"
+        required>
 
       <label for="first_name">Nombre</label>
       <input id="first_name" name="first_name" type="text" placeholder="Nombre" minlength="4" maxlength="16" required>
@@ -33,14 +36,16 @@
       <input id="password" name="password" type="password" minlength="8" maxlength="64" required>
 
       <label for="confirmation_password">Confirmar contraseña</label>
-      <input id="confirmation_password" name="confirmation_password" type="password" minlength="8" maxlength="64" required>
+      <input id="confirmation_password" name="confirmation_password" type="password" minlength="8" maxlength="64"
+        required>
 
       <button type="submit">Crear cuenta</button>
     </form>
 
-    <p class="hint">Nota: este formulario es estático. Conecta el `action` al endpoint del backend correspondiente (p.ej. `/center_administrator/auth/`).</p>
+    <!-- Eliminar pista estatica -->
   </main>
-</main>
+  </main>
   <script src="{% static 'userYC/js/register.js' %}"></script>
 </body>
+
 </html>

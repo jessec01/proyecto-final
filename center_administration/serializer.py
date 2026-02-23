@@ -4,6 +4,8 @@ from .models import CenterAdministrator
 from rest_framework import serializers
 from centeryoga.models import YogaCenter
 from userYC.models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.exceptions import AuthenticationFailed
 class CenterAdministratorSerializer(Serializer):
     id=serializers.IntegerField(read_only=True)
     user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
@@ -33,3 +35,11 @@ class LoginSerializer(serializers.Serializer):
         return value
     def validate(self, attrs):
         return super().validate(attrs)
+
+class CenterAdminTokenSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        # Una vez validada la contraseña, verificamos el rol
+        if not self.user.is_center_administrator:
+            raise AuthenticationFailed('No tienes permisos de Administrador de Centro para iniciar sesión aquí.')
+        return data

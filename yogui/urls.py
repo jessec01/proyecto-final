@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from .views import RegisterUserView
 from .views import ReadFormView, LoginView,  LogoutView, RegisterProfileView,ReadFormProfileView, YoguiDashboardView
-
+from .views import YoguiLoginView
 urlpatterns = [
     
     # URL para mostrar el formulario de registro
@@ -14,9 +14,9 @@ urlpatterns = [
     # URL para procesar el formulario de registro
     path('api/register/', ReadFormView.as_view(), name='register_submit'),
     #url para formulario de login
-    path('login/',LoginView.as_view(), name='login'), 
+    path('login/',LoginView.as_view(), name='yogui_login'), 
     # URL para obtener el token JWT (login)
-    path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 
+    path('api/login/', YoguiLoginView.as_view(), name='token_obtain_pair'), 
     # URL para refrescar el token JWT
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     #url para mostrar el formulario de registro de perfil del yogui

@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Yogui
 import re
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.exceptions import AuthenticationFailed
 class YoguiSerializer(serializers.ModelSerializer):
     is_yogui = serializers.BooleanField(default=True,write_only=True)
     is_instructor = serializers.BooleanField(default=False,write_only=True)
@@ -51,4 +53,12 @@ class ReadLoginFormSerializer(serializers.Serializer):
         return value
     def validate(self, attrs):          
         return super().validate(attrs)
-    
+
+
+class YoguiTokenSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        # Una vez validada la contraseña, verificamos el rol
+        if not self.user.is_yogui:
+            raise AuthenticationFailed('No tienes permisos de Administrador de Centro para iniciar sesión aquí.')
+        return data

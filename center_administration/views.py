@@ -12,6 +12,9 @@ from centeryoga.serializer import MasterSerializer
 from django.db import  IntegrityError
 from django.db.transaction import TransactionManagementError
 from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.exceptions import AuthenticationFailed
+from center_administration.serializer import CenterAdminTokenSerializer
 # Create your views here.
 #registro usuario template view
 class RegisterUserView(TemplateView):
@@ -32,9 +35,9 @@ class ReadFormView(APIView):
 #login template view    
 class LoginView(TemplateView):
     template_name = 'center_administration/login.html'
-
 #el proceso de autenticación se maneja con las vistas de simplejwt en urls.py, no es necesario crear una vista adicional aquí
-
+class CenterAdminLoginView(TokenObtainPairView):
+    serializer_class = CenterAdminTokenSerializer   
 # Vista para mostrar el formulario de perfil del center administrator
 class RegisterProfileView(TemplateView):
     template_name = 'center_administration/register_profile.html'
@@ -75,7 +78,7 @@ class ReadDashboardInitialConfigView(viewsets.ModelViewSet):
         # 2. Validar (DRF revisa tipos de datos, campos requeridos, etc.)
         # Si algo falla aquí, DRF devuelve error 400 automáticamente y se detiene.
         try: 
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
                 # 3. Llamar al método create del MasterSerializer
                 yogacenter = serializer.save(user=request.user)  # Aquí se ejecuta tu lógica personalizada de creación
         except ValidationError as e:

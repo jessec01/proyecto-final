@@ -6,6 +6,9 @@ from userYC.serializer import UserYCSerializer
 from .serializer import  YoguiSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.exceptions import AuthenticationFailed
+from yogui.serializer import YoguiTokenSerializer
 #
 # Create your views here.
 #registro usuario template view
@@ -26,7 +29,8 @@ class LoginView(TemplateView):
 
 
 #el proceso de autenticación se maneja con las vistas de simplejwt en urls.py, no es necesario crear una vista adicional aquí
-
+class YoguiLoginView(TokenObtainPairView):
+    serializer_class = YoguiTokenSerializer
 # Vista para mostrar el formulario de perfil del yogui
 class RegisterProfileView(TemplateView):
     template_name = 'yogui/register_profile.html'
