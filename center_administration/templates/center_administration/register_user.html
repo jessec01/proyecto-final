@@ -14,7 +14,7 @@
     <h1>Crear cuenta - Centro</h1>
     <p class="hint">Rellena los datos para crear una cuenta de centro/administrador.</p>
 
-    <form id="registerForm" method="post" action="{% url 'read_form' %}" data-success-url="{% url 'login' %}">
+    <form id="registerForm" method="post" action="{% url 'read_form' %}" data-success-url="{% url 'center_admin_login' %}">
       {% csrf_token %}
       <label for="email">Correo electrónico</label>
       <input id="email" name="email" type="email" placeholder="centro@ejemplo.com" required>

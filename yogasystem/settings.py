@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'rules_packages',
     'rules_payments',
     'rest_framework',
+    'packages',
 
 ]
 PHONENUMBER_DEFAULT_REGION='VE'  # Venezuela

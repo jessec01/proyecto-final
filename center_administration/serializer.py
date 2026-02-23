@@ -6,21 +6,41 @@ from centeryoga.models import YogaCenter
 from userYC.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
+#Serializador para el modelo CenterAdministrator
 class CenterAdministratorSerializer(Serializer):
+    """
+    Serializador para el modelo CenterAdministrator
+    Se usa Serializer en vez de ModelSerializer porque no se va a crear el modelo en la base de datos   
+    Se usa para crear el perfil del administrador
+    """ 
     id=serializers.IntegerField(read_only=True)
     user=serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     yoga_center=serializers.PrimaryKeyRelatedField(queryset=YogaCenter.objects.all())
     is_active_profile=serializers.BooleanField(default=True)
     at_creation=serializers.DateTimeField(read_only=True)
-    
+    photo_profile=serializers.ImageField(allow_null=True, required=False)
+    role=serializers.CharField(max_length=50, allow_null=True)
+    experience_years=serializers.IntegerField(allow_null=True)
+    statement=serializers.CharField(allow_null=True)
+
     def create(self, validated_data):
+        """
+        Crea y guarda una nueva instancia de CenterAdministrator.
+        No se guarda en la base de datos porque no se va a usar el modelo en la base de datos   
+        porque depende de otros modelos que si se guardan en la base de datos
+        """
         user=validated_data.get('user')
         yoga_center=validated_data.get('yoga_center')
-        center_administrator=CenterAdministrator.objects.create(
+        center_administrator=CenterAdministrator(
             user=user,
-            yoga_center=yoga_center,is_active_profile=validated_data.get('is_active_profile', True)
+            yoga_center=yoga_center,is_active_profile=validated_data.get('is_active_profile', True),
+            photo_profile=validated_data.get('photo_profile'),
+            role=validated_data.get('role'),
+            experience_years=validated_data.get('experience_years'),
+            statement=validated_data.get('statement')
         )
         return center_administrator
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)   

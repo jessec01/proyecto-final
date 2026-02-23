@@ -13,7 +13,7 @@ class InstructorSerializer(serializers.ModelSerializer):
     """Serializer para crear un instructor"""
     class Meta:
         model = Instructor
-        fields = ['user','at_creation','especiality','photo_profile','description'] 
+        fields = ['user','yogacenter','at_creation','especiality','photo_profile','description']
     def validate_especiality(self,value_especiality):
         especiality=re.search('^[a-zA-Z\s]{4,100}$',value_especiality)
         if not especiality:
@@ -30,6 +30,7 @@ class InstructorSerializer(serializers.ModelSerializer):
         return value_photo_profile    
     def create(self, validated_data):
         user=validated_data.get('user')
+        yogacenter=validated_data.get('yogacenter')
         especiality=validated_data.get('especiality')
         description=validated_data.get('description')
         photo_profile=validated_data.get('photo_profile')
@@ -37,6 +38,7 @@ class InstructorSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             instructor=Instructor.objects.create(
                 user=user,
+                yogacenter=yogacenter,
                 especiality=especiality,
                 description=description,
                 photo_profile=photo_profile
@@ -44,9 +46,21 @@ class InstructorSerializer(serializers.ModelSerializer):
         return instructor
 class InstructorUpdateSerializer(serializers.ModelSerializer):
     """ Serializer para actualizar un instructor """
+    first_name=serializers.CharField(source='user.first_name',required=False)
+    last_name=serializers.CharField(source='user.last_name',required=False)
     class Meta:
         model = Instructor
-        fields = ['especiality','photo_profile','description'] 
+        fields = ['first_name','last_name','especiality','photo_profile','description'] 
+    def validate_first_name(self,value_first_name):
+        first_name=re.search('^[a-zA-Z\s]{4,100}$',value_first_name)
+        if not first_name:
+            raise serializers.ValidationError({"first_name": "invalid first name"})
+        return first_name
+    def validate_last_name(self,value_last_name):
+        last_name=re.search('^[a-zA-Z\s]{4,100}$',value_last_name)
+        if not last_name:
+            raise serializers.ValidationError({"last_name": "invalid last name"})
+        return last_name
     def validate_especiality(self,value_especiality):
         especiality=re.search('^[a-zA-Z\s]{4,100}$',value_especiality)
         if not especiality:
@@ -61,6 +75,25 @@ class InstructorUpdateSerializer(serializers.ModelSerializer):
         if value_photo_profile and not value_photo_profile.name.lower().endswith(('.jpg', '.jpeg', '.png')):
             raise serializers.ValidationError({"photo_profile": "Invalid file type. Only .jpg, .jpeg, and .png are allowed."})
         return value_photo_profile   
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+        # 2. Actualizamos el modelo Instructor (Hijo)
+        instance.especiality = validated_data.get('especiality', instance.especiality)
+        instance.description = validated_data.get('description', instance.description)
+        
+        photo = validated_data.get('photo_profile', None)
+        with transaction.atomic():
+            if photo:
+                instance.photo_profile = photo
+            instance.save()
+            # 3. Actualizamos el modelo User (Padre) si se enviaron esos datos
+            if user_data:
+                user = instance.user
+                user.first_name = user_data.get('first_name', user.first_name)
+                user.last_name = user_data.get('last_name', user.last_name)
+                user.save()
+            return instance
+
 class InstructorListSerializer(serializers.ModelSerializer):
     """ Serializer para listar un instructor """
     first_name=serializers.CharField(source='user.first_name',read_only=True)
@@ -79,7 +112,7 @@ class DetailInstructorSerializer(serializers.ModelSerializer):
     user=UserSerializer(read_only=True)
     class Meta:
         model=Instructor
-        fields=['user','especiality','photo_profile','description']
+        fields=['user','yogacenter','especiality','photo_profile','description']
 class LoginSerializer(serializers.Serializer):
     """ Serializer para iniciar sesión """
     email = serializers.EmailField()

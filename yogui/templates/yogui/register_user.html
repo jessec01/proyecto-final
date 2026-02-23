@@ -12,7 +12,7 @@
     <h1>Crear cuenta - Yogui</h1>
     <p class="hint">Rellena los datos para crear una cuenta de yogui.</p>
 
-    <form id="registerForm" method="post" action="#">
+    <form id="registerForm" method="post"  action="{% url 'read_form' %}" data-success-url="{% url 'yogui_login' %}">
       {% csrf_token %}
       <label for="email">Correo electrónico</label>
       <input id="email" name="email" type="email" placeholder="yogui@ejemplo.com" required>

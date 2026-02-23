@@ -1,15 +1,20 @@
+#instructor/views.py
+from django.db import  transaction
 from django.views.generic import TemplateView
-from rest_framework.views import APIView
-from userYC.serializer import UserYCSerializer
-from .serializer import InstructorSerializer
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from django.db import transaction
-from rest_framework.exceptions import ValidationError
-from rest_framework_simplejwt.tokens import RefreshToken
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.exceptions import ValidationError
+from rest_framework import (viewsets,status)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+
+
+from userYC.serializer import UserYCSerializer
+from .serializer import (InstructorSerializer,
+InstructorUpdateSerializer,
+DetailInstructorSerializer,LoginSerializer, InstructorListSerializer )
 # Create your views here.
 #registro usuario template view
 class RegisterUserView(TemplateView):
@@ -53,8 +58,30 @@ class ReadProfileView(APIView):
         except transaction.TransactionManagementError as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # Otras vistas para el dashboard del instructor, gestión de clases, etc.        
-class InstructorDashboardView(TemplateView):
-    template_name = 'instructor/instructor_dashboard.html'
+class InstructorDashboardView(viewsets.ModelViewSet):
+    serializer_class = InstructorSerializer  # No olvides definir el serializer
+    
+    def get_queryset(self):
+        # 1. Obtenemos el usuario autenticado que está haciendo la solicitud
+        user = self.request.user
+        
+        # 2. Navegamos desde la tabla base (User) hasta el perfil CenterAdministrator
+        # y de allí sacamos el campo yoga_center
+        # La forma correcta según tus modelos es user.centeradministrator.yoga_center
+        admin_center = user.centeradministrator.yoga_center
+        return Instructor.objects.filter(yogacenter=admin_center)
+    def get_serializer_class(self):
+        #crear
+        if self.action == 'create':
+            return InstructorSerializer
+        #editar
+        elif self.action in ['update', 'partial_update']:
+            return InstructorUpdateSerializer
+        #detalle
+        elif self.action == 'retrieve':
+            return DetailInstructorSerializer
+        #lista
+        return InstructorListSerializer
 #vista para cerrar sesión del instructor    
 class LogoutView(TemplateView):
     permission_classes = (IsAuthenticated,)

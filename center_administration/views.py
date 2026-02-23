@@ -94,3 +94,5 @@ class ReadDashboardInitialConfigView(viewsets.ModelViewSet):
         return Response({
             'mensaje': 'Proceso completado exitosamente'
         }, status=status.HTTP_201_CREATED)
+class CenterAdminDashboardView(TemplateView):
+    template_name = 'center_administration/center_admin_dashboard.html' 

@@ -3,8 +3,8 @@ from rest_framework import serializers
 
 from .models import YogaCenter
 from phonenumber_field.phonenumber import to_python
-from rules_center.serializer import RuleSerializer
-from rules_center.models import Rule
+from rules_center.serializer import RulesCenterSerializer
+from rules_center.models import RulesCenter
 from rules_payments.serializer import RulesPaymentSerializer
 from rules_payments.models import RulesPayment
 from rules_packages.serializer import RulesPackagesSerializer
@@ -98,7 +98,7 @@ class CenterSerializer(serializers.Serializer):
     
 class MasterSerializer(serializers.Serializer):
     center=CenterSerializer()
-    rules_center =  RuleSerializer()
+    rules_center =  RulesCenterSerializer()
     rules_packages = RulesPackagesSerializer()
     rules_payments = RulesPaymentSerializer()
     center_administrator = CenterAdministratorSerializer()
@@ -117,7 +117,7 @@ class MasterSerializer(serializers.Serializer):
             
             center_administrator = CenterAdministrator.objects.create(user=user, **admin_center_data)
             
-            object_rules_center = Rule.objects.create(center=yoga_center, **rules_center_data)
+            object_rules_center = RulesCenter.objects.create(center=yoga_center, **rules_center_data)
             object_rules_packages = RulesPackages.objects.create(rules_center=object_rules_center, **rules_packages_data)
             object_rules_payments = RulesPayment.objects.create(rules_center=object_rules_center, **rules_payments_data)
             #modificar el estado center para que se active una vez que se hayan creado todas las entidades relacionadas                                                

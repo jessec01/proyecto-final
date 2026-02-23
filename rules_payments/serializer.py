@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from .models import RulesPayment
-from rules_center.models import Rule
+from rules_center.models import RulesCenter
 class RulesPaymentSerializer(serializers.Serializer):
     id=serializers.IntegerField(read_only=True)
     discoint_porcentage = serializers.DecimalField(max_digits=5, decimal_places=2)
     comission_porcentage = serializers.DecimalField(max_digits=5, decimal_places=2)
-    rules_center=serializers.PrimaryKeyRelatedField(queryset=Rule.objects.all(), write_only=True)
+    rules_center=serializers.PrimaryKeyRelatedField(queryset=RulesCenter.objects.all(), write_only=True)
     def validate_discoint_porcentage(self, value):
         value=float(value)
         if value < 0 or value > 100:

@@ -1,7 +1,7 @@
 import re
 from rest_framework import serializers
-from .models import Rule
-class RuleSerializer(serializers.Serializer):       
+from .models import RulesCenter
+class RulesCenterSerializer(serializers.Serializer):       
     id=serializers.IntegerField(read_only=True)
     name = serializers.CharField(max_length=100)
     description = serializers.CharField()
@@ -21,5 +21,5 @@ class RuleSerializer(serializers.Serializer):
         name = validated_data.get('name')
         description = validated_data.get('description')
         active = validated_data.get('active')
-        rules_center =Rule(name=name, description=description, active=active )
+        rules_center =RulesCenter(name=name, description=description, active=active )
         return rules_center
