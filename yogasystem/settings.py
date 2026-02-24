@@ -51,11 +51,15 @@ INSTALLED_APPS = [
     'center_administration',
     'centeryoga',
     'yogui',
-    'rules_center',
-    'rules_packages',
-    'rules_payments',
+    'rules',
     'rest_framework',
     'packages',
+    'classyogui',
+    'rulescenter',
+    'rulespackages',
+    'rulespayment',
+    'pay',
+    'policy'
 
 ]
 PHONENUMBER_DEFAULT_REGION='VE'  # Venezuela

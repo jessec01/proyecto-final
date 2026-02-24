@@ -60,11 +60,11 @@ class ReadProfileView(APIView):
 # Otras vistas para el dashboard del instructor, gestión de clases, etc.        
 class InstructorDashboardView(viewsets.ModelViewSet):
     serializer_class = InstructorSerializer  # No olvides definir el serializer
-    
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     def get_queryset(self):
         # 1. Obtenemos el usuario autenticado que está haciendo la solicitud
         user = self.request.user
-        
         # 2. Navegamos desde la tabla base (User) hasta el perfil CenterAdministrator
         # y de allí sacamos el campo yoga_center
         # La forma correcta según tus modelos es user.centeradministrator.yoga_center
