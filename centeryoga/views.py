@@ -21,7 +21,6 @@ class dasboardCenterView(TemplateView):
 # views.py
 class CenterYogaDashboardView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
     def get_queryset(self):
        return YogaCenter.objects.all()
     def get_serializer_class(self):

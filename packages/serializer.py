@@ -11,22 +11,22 @@ class PackagesSerializer(serializers.Serializer):
     description=serializers.CharField(max_length=100)
     price=serializers.DecimalField(max_digits=10, decimal_places=2)
     duration=serializers.JSONField()
-    level_package=serializers.CharField(max_length=20,choices=[('beginner','beginner'),('intermediate','intermediate'),('advanced','advanced')], default='beginner')
-    category=serializers.CharField(max_length=20,choices=[('monthly','monthly'),('yearly','yearly'),('single','single')], default='monthly')
-    stackclass=serializers.CharField(max_length=20,choices=[('suscription','999'),('packages','10'),('class','1')], default='class')
+    level_package=serializers.ChoiceField(choices=[('beginner','beginner'),('intermediate','intermediate'),('advanced','advanced')], default='beginner')
+    category=serializers.ChoiceField(choices=[('monthly','monthly'),('yearly','yearly'),('single','single')], default='monthly')
+    stackclass=serializers.ChoiceField(choices=[('suscription','999'),('packages','10'),('class','1')], default='class')
     at_creation=serializers.DateTimeField(read_only=True)
     at_update=serializers.DateTimeField(read_only=True)
 
     def validate_name(self, value: str) -> str:
         """Validate name"""
-        if not re.match(r'^[a-zA-Z0-9 ]+$', value):
-            raise serializers.ValidationError('Name must contain only letters and numbers')
+        if not re.match(r'^[\w\sáéíóúÁÉÍÓÚñÑ]+$', value):
+            raise serializers.ValidationError('Name must contain valid characters')
         return value
 
     def validate_description(self, value: str) -> str:
         """Validate description"""
-        if not re.match(r'^[a-zA-Z0-9 ]+$', value):
-            raise serializers.ValidationError('Description must contain only letters and numbers')
+        if not re.match(r'^[\w\s.,;:!¡?¿\'"áéíóúÁÉÍÓÚñÑüÜ()\-+%#&/]+$', value):
+            raise serializers.ValidationError('Description must contain valid characters')
         return value
 
     def validate_price(self, value) -> float:

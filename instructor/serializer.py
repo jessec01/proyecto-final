@@ -8,21 +8,19 @@ from rest_framework import serializers
 
 # importaciones de models
 from instructor.models import Instructor
-from user.models import User    
+from userYC.models import User    
 class InstructorSerializer(serializers.ModelSerializer):
     """Serializer para crear un instructor"""
     class Meta:
         model = Instructor
         fields = ['user','yogacenter','at_creation','especiality','photo_profile','description']
     def validate_especiality(self,value_especiality):
-        especiality=re.search('^[a-zA-Z\s]{4,100}$',value_especiality)
-        if not especiality:
-            raise serializers.ValidationError({"especiality": "invalid especiality"})
+        if len(value_especiality) < 2 or len(value_especiality) > 100:
+            raise serializers.ValidationError({"especiality": "La especialidad debe tener entre 2 y 100 caracteres."})
         return value_especiality
     def validate_description(self,value_description):
-        description=re.search('^[a-zA-Z\s]{4,500}$',value_description)
-        if not description:
-            raise serializers.ValidationError({"description": "invalid description"})
+        if len(value_description) < 2 or len(value_description) > 2000:
+            raise serializers.ValidationError({"description": "La descripción debe tener entre 2 y 2000 caracteres."})
         return value_description
     def validate_photo_profile(self, value_photo_profile):
         if value_photo_profile and not value_photo_profile.name.lower().endswith(('.jpg', '.jpeg', '.png')):
@@ -52,24 +50,22 @@ class InstructorUpdateSerializer(serializers.ModelSerializer):
         model = Instructor
         fields = ['first_name','last_name','especiality','photo_profile','description'] 
     def validate_first_name(self,value_first_name):
-        first_name=re.search('^[a-zA-Z\s]{4,100}$',value_first_name)
+        first_name=re.search(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,100}$',value_first_name)
         if not first_name:
             raise serializers.ValidationError({"first_name": "invalid first name"})
-        return first_name
+        return value_first_name
     def validate_last_name(self,value_last_name):
-        last_name=re.search('^[a-zA-Z\s]{4,100}$',value_last_name)
+        last_name=re.search(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,100}$',value_last_name)
         if not last_name:
             raise serializers.ValidationError({"last_name": "invalid last name"})
-        return last_name
+        return value_last_name
     def validate_especiality(self,value_especiality):
-        especiality=re.search('^[a-zA-Z\s]{4,100}$',value_especiality)
-        if not especiality:
-            raise serializers.ValidationError({"especiality": "invalid especiality"})
+        if len(value_especiality) < 2 or len(value_especiality) > 100:
+            raise serializers.ValidationError({"especiality": "La especialidad debe tener entre 2 y 100 caracteres."})
         return value_especiality
     def validate_description(self,value_description):
-        description=re.search('^[a-zA-Z\s]{4,500}$',value_description)
-        if not description:
-            raise serializers.ValidationError({"description": "invalid description"})
+        if len(value_description) < 2 or len(value_description) > 5000:
+            raise serializers.ValidationError({"description": "La descripción debe tener entre 2 y 5000 caracteres."})
         return value_description
     def validate_photo_profile(self, value_photo_profile):
         if value_photo_profile and not value_photo_profile.name.lower().endswith(('.jpg', '.jpeg', '.png')):
@@ -100,7 +96,7 @@ class InstructorListSerializer(serializers.ModelSerializer):
     last_name=serializers.CharField(source='user.last_name',read_only=True)
     class Meta:
         model=Instructor
-        fields=['first_name','last_name','especiality','photo_profile','description']
+        fields=['first_name', 'last_name', 'user','yogacenter','especiality','photo_profile','description']
 class UserSerializer(serializers.ModelSerializer):
     """ Serializer para mostrar un usuario """
     class Meta:

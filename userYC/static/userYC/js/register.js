@@ -150,7 +150,7 @@ function validate_username(username) {
 }
 function validate_first_name(name) {
     let namenew = name.trim();
-    const first_nameRegex = new RegExp(/^[a-zA-Z]{4,16}$/);
+    const first_nameRegex = new RegExp(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,30}$/);
     if (namenew === "") {
         let objectDOM = document.getElementsByName('first_name');
         queue_divs.enqueue(objectDOM);
@@ -174,7 +174,7 @@ function validate_first_name(name) {
 
 function validate_last_name(name) {
     let namenew = name.trim();
-    const last_nameRegex = new RegExp(/^[a-zA-Z]{4,16}$/);
+    const last_nameRegex = new RegExp(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,30}$/);
     if (namenew === "") {
         let objectDOM = document.getElementsByName('last_name');
         queue_divs.enqueue(objectDOM);

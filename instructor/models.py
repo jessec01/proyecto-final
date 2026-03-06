@@ -9,7 +9,7 @@ class Instructor(models.Model):
     at_creation=models.DateTimeField(auto_now_add=True)
     especiality=models.CharField(max_length=100)
     photo_profile=models.ImageField(upload_to='instructor_photos/', null=True, blank=True)
-    description=models.TextField()
+    description=models.TextField(null=True,blank=True)
     def load_photo_profile(self, photo):
         self.photo_profile = photo
         self.save()

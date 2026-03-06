@@ -1,11 +1,11 @@
 from django.db import models
 
 from pay.models import Pay
-from rules.models import Rule
+from rules.models import Rules
 # Create your models here.
 class RulePay(models.Model):
     pay=models.ForeignKey(Pay, on_delete=models.CASCADE)
-    rule=models.ForeignKey(Rule, on_delete=models.CASCADE)
+    rule=models.ForeignKey(Rules, on_delete=models.CASCADE)
     class Meta:
         constraints=[
             models.UniqueConstraint(fields=['pay', 'rule'], 

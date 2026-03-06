@@ -3,16 +3,17 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.views.generic import TemplateView
 from .views import RegisterUserView
 from .views import ReadFormView, LoginView  
 from instructor.views import RegisterProfileView, ReadProfileView, InstructorDashboardView, LogoutView
 urlpatterns = [
     # URL para mostrar el formulario de registro
-    path('register/', RegisterUserView.as_view(), name='register'),
+    path('register/', RegisterUserView.as_view(), name='instructor_register'),
     # URL para procesar el formulario de registro
-    path('api/register/', ReadFormView.as_view(), name='register_submit'),
+    path('api/register/', ReadFormView.as_view(), name='instructor_register_submit'),
     # URL para mostrar el formulario de login
-    path('login/',LoginView.as_view(), name='login'),
+    path('login/',LoginView.as_view(), name='instructor_login'),
     # URL para obtener el token JWT (login)
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Este es el Login
     # URL para refrescar el token JWT
@@ -24,5 +25,7 @@ urlpatterns = [
     #url para cerrar sesión del instructor
     path('logout/', LogoutView.as_view(), name='logout'),
     # Otras URLs para el dashboard del instructor, gestión de clases, etc.
-    path('dashboard/', InstructorDashboardView.as_view(), name='instructor_dashboard'),
+    path('api/dashboard/', InstructorDashboardView.as_view({'get': 'list', 'post': 'create'}), name='instructor_dashboard_api'),
+    path('api/dashboard/<int:pk>/', InstructorDashboardView.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='instructor_dashboard_detail'),
+    path('dashboard/', TemplateView.as_view(template_name='instructor/instructor_dashboard.html'), name='instructor_dashboard'),
 ]

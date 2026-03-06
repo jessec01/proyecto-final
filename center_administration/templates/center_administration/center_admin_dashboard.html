@@ -8,6 +8,72 @@
     <title>Dashboard | Center Administration</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/center_admin_dashboard.css' %}?v={% now 'U' %}">
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .modal-form input,
+        .modal-form textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,7 +86,7 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active">
+            <a href="{% url 'dashboard_main' %}" class="nav-item active">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -28,40 +94,41 @@
                 </svg>
                 Vista General
             </a>
-            <a href="#" class="nav-item">
+
+            <a href="{% url 'center_admin_profile' %}" class="nav-item">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
-                    </path>
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
-                Instructores
+                Mi Perfil
             </a>
-            <a href="#" class="nav-item">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
-                Clases y Horarios
-            </a>
-            <!-- PLAN CERO: Estos elementos quedan ocultos para priorizar MVP (Desarrollo Acelerado) 
-            <a href="#" class="nav-item">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-                </svg>
-                Paquetes
-            </a>
-            <a href="#" class="nav-item">
+
+            <a href="{% url 'center_admin_center_edit' %}" class="nav-item">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
                     </path>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
-                Ajustes
+                Configurar Centro
             </a>
-            -->
+
+            <a href="{% url 'center_admin_packages' %}" class="nav-item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                </svg>
+                Paquetes de Yoga
+            </a>
+
+            <a href="{% url 'center_admin_promotions' %}" class="nav-item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                Promociones
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -102,7 +169,7 @@
                 </div>
                 <div class="stat-details">
                     <p class="stat-title">Yoguis Registrados</p>
-                    <p class="stat-value">1,204</p>
+                    <p class="stat-value">0</p>
                 </div>
             </div>
 
@@ -116,7 +183,7 @@
                 </div>
                 <div class="stat-details">
                     <p class="stat-title">Instructores Activos</p>
-                    <p class="stat-value">8</p>
+                    <p class="stat-value" id="instructoresCount">0</p>
                 </div>
             </div>
 
@@ -130,7 +197,7 @@
                 </div>
                 <div class="stat-details">
                     <p class="stat-title">Clases Programadas</p>
-                    <p class="stat-value">32</p>
+                    <p class="stat-value">0</p>
                 </div>
             </div>
 
@@ -155,7 +222,7 @@
         <div class="content-panel">
             <div class="panel-header">
                 <h3>Gestión de Instructores</h3>
-                <button class="btn-primary">
+                <button class="btn-primary" id="openModalBtn">
                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -164,7 +231,7 @@
             </div>
 
             <div class="table-container">
-                <table class="data-table">
+                <table class="data-table" id="instructors-table">
                     <thead>
                         <tr>
                             <th>Instructor</th>
@@ -175,73 +242,104 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Ejemplo Falso (Placeholder) -->
                         <tr>
-                            <td>
-                                <div class="table-user">
-                                    <img src="https://ui-avatars.com/api/?name=A+S&background=random" alt="Avatar">
-                                    <div>
-                                        <p class="name">Ana Silva</p>
-                                        <p class="email">ana.silva@yogui.com</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Hatha Yoga</td>
-                            <td><span class="badge active">Activo</span></td>
-                            <td>12 Mar 2026</td>
-                            <td>
-                                <button class="btn-icon" title="Editar">
-                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="btn-icon danger" title="Suspender">
-                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </td>
+                            <td colspan="5" style="text-align: center; padding: 20px; color: #6b7280;">Aún no hay
+                                instructores registrados.</td>
                         </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Componente: Facturas Emitidas -->
+        <div class="content-panel" style="margin-top: 30px;">
+            <div class="panel-header">
+                <h3>Facturas Emitidas (Historial de Pagos)</h3>
+            </div>
+            <div class="table-container">
+                <table class="data-table" id="invoices-table">
+                    <thead>
                         <tr>
-                            <td>
-                                <div class="table-user">
-                                    <img src="https://ui-avatars.com/api/?name=C+R&background=random" alt="Avatar">
-                                    <div>
-                                        <p class="name">Carlos Ruiz</p>
-                                        <p class="email">cruiz@yogui.com</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Ashtanga</td>
-                            <td><span class="badge pending">En validación</span></td>
-                            <td>20 Feb 2026</td>
-                            <td>
-                                <button class="btn-icon" title="Editar">
-                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="btn-icon danger" title="Suspender">
-                                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
-                                        </path>
-                                    </svg>
-                                </button>
+                            <th>ID Factura</th>
+                            <th>Cliente</th>
+                            <th>Paquete</th>
+                            <th>Fecha Emisión</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px; color: #6b7280;">
+                                Aún no se han generado facturas válidas en tu centro de yoga.
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Modal para Añadir Instructor -->
+        <div id="instructorModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 style="margin: 0; font-size: 1.25rem;">Añadir Nuevo Instructor</h3>
+                    <button type="button" class="btn-icon" id="closeModalBtn" title="Cerrar"
+                        style="background: none; border: none; cursor: pointer;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <form id="createInstructorForm" class="modal-form">
+                    <div class="grid-two">
+                        <div>
+                            <label for="instEmail">Correo electrónico</label>
+                            <input id="instEmail" type="email" placeholder="yogui@center.com" required>
+                        </div>
+                        <div>
+                            <label for="instUsername">Nombre de usuario</label>
+                            <input id="instUsername" type="text" minlength="4" placeholder="yogui_master" required>
+                        </div>
+                        <div>
+                            <label for="instFirstName">Nombre</label>
+                            <input id="instFirstName" type="text" minlength="4" placeholder="Ana" required>
+                        </div>
+                        <div>
+                            <label for="instLastName">Apellido</label>
+                            <input id="instLastName" type="text" minlength="1" placeholder="Silva" required>
+                        </div>
+                        <div>
+                            <label for="instPhone">Teléfono</label>
+                            <input id="instPhone" type="tel" placeholder="+584120000000" required>
+                        </div>
+                        <div>
+                            <label for="instEspeciality">Especialidad</label>
+                            <input id="instEspeciality" type="text" placeholder="Hatha" minlength="4" required>
+                        </div>
+                        <div>
+                            <label for="instPassword">Contraseña temporal</label>
+                            <input id="instPassword" type="password" minlength="8" placeholder="********" required>
+                        </div>
+                        <div>
+                            <label for="instPasswordConfirm">Confirmar contraseña</label>
+                            <input id="instPasswordConfirm" type="password" minlength="8" placeholder="********"
+                                required>
+                        </div>
+                    </div>
+                    <div class="mt-1" style="margin-top: 10px;">
+                        <label for="instDescription">Descripción de Perfil</label>
+                        <textarea id="instDescription" rows="3" placeholder="Experiencia y biografía del instructor..."
+                            minlength="4" required></textarea>
+                    </div>
+                    <div class="modal-footer mt-2" style="margin-top: 20px;">
+                        <button type="button" class="btn-secondary" id="cancelModalBtn">Cancelar</button>
+                        <button type="submit" class="btn-primary" id="saveInstructorBtn"
+                            style="border: none; cursor: pointer; padding: 8px 16px; border-radius: 6px;">Guardar
+                            Instructor</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -253,15 +351,170 @@
             if (refreshToken) {
                 await fetch('/center_administrator/logout/', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ refresh: refreshToken })
                 });
             }
             localStorage.removeItem('access');
             localStorage.removeItem('refresh');
             window.location.href = '/center_administrator/login/';
+        });
+
+        // Modal Logic
+        const openModalBtn = document.getElementById('openModalBtn');
+        const modal = document.getElementById('instructorModal');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelModalBtn');
+        const form = document.getElementById('createInstructorForm');
+
+        openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
+        const hideModal = () => { modal.style.display = 'none'; form.reset(); };
+        closeBtn.addEventListener('click', hideModal);
+        cancelBtn.addEventListener('click', hideModal);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('instEmail').value;
+            const username = document.getElementById('instUsername').value;
+            const firstName = document.getElementById('instFirstName').value;
+            const lastName = document.getElementById('instLastName').value;
+            const phone = document.getElementById('instPhone').value;
+            const especiality = document.getElementById('instEspeciality').value;
+            const password = document.getElementById('instPassword').value;
+            const passwordConfirm = document.getElementById('instPasswordConfirm').value;
+            const description = document.getElementById('instDescription').value;
+
+            if (password !== passwordConfirm) {
+                alert("Las contraseñas no coinciden");
+                return;
+            }
+            try {
+                // 1. Get yoga center ID from current user profile
+                const token = localStorage.getItem('access');
+                const profileRes = await fetch('/center_administrator/api/center_administrator/', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!profileRes.ok) throw new Error('No se pudo obtener el perfil del centro');
+                const profiles = await profileRes.json();
+                if (profiles.length === 0) throw new Error('No tienes un centro de yoga asociado');
+                const centerId = profiles[0].yoga_center;
+
+                // 2. Create User Instructor
+                const userRes = await fetch('/instructor/api/register/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username, first_name: firstName, last_name: lastName, phone, password, confirmation_password: passwordConfirm })
+                });
+                if (!userRes.ok) {
+                    const err = await userRes.json();
+                    throw new Error(JSON.stringify(err));
+                }
+                const userData = await userRes.json();
+                const userId = userData.user.id || userData.id;
+
+                // 3. Create Instructor Profile
+                const instRes = await fetch('/instructor/api/dashboard/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ user: userId, yogacenter: centerId, especiality, description })
+                });
+
+                if (!instRes.ok) {
+                    const err = await instRes.json();
+                    throw new Error(JSON.stringify(err));
+                }
+                alert('Instructor agregado exitosamente!');
+                hideModal();
+                loadInstructors();
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+
+        // Load Instructors Table
+        async function loadInstructors() {
+            const token = localStorage.getItem('access');
+            const res = await fetch('/instructor/api/dashboard/', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.status === 401) {
+                alert("Tu sesión ha expirado por seguridad. Por favor, inicia sesión de nuevo.");
+                window.location.href = '/center_administrator/login/';
+                return;
+            }
+            if (res.ok) {
+                const data = await res.json();
+                const tbody = document.querySelector('#instructors-table tbody');
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: #6b7280;">Aún no hay instructores registrados.</td></tr>`;
+                    document.getElementById('instructoresCount').innerText = "0";
+                    return;
+                }
+                tbody.innerHTML = '';
+                data.forEach(inst => {
+                    tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="table-user" style="display:flex; align-items:center; gap:10px;">
+                                <img src="https://ui-avatars.com/api/?name=${inst.first_name}+${inst.last_name}&background=random" alt="Avatar" style="width:32px;border-radius:50%;">
+                                <div>
+                                    <p class="name" style="margin:0;font-weight:600;">${inst.first_name || 'Instructor'} ${inst.last_name || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${inst.especiality}</td>
+                        <td><span class="badge active" style="background:#d1fae5;color:#065f46;padding:4px 8px;border-radius:12px;font-size:12px;">Activo</span></td>
+                        <td>Recién añadido</td>
+                        <td>
+                            <button class="btn-icon" title="Editar">✏️</button>
+                        </td>
+                    </tr>`;
+                });
+                document.getElementById('instructoresCount').innerText = data.length;
+            }
+        }
+
+        async function loadInvoices() {
+            const token = localStorage.getItem('access');
+            const res = await fetch('/center_administrator/api/invoices/', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const tbody = document.querySelector('#invoices-table tbody');
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #6b7280;">Aún no se han generado facturas válidas en tu centro de yoga.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.forEach(inv => {
+                    // Checkeamos que tenga una URL y no sea null para permitir la visualización
+                    const btnLink = inv.file_url ? `<a href="${inv.file_url}" target="_blank" class="btn-secondary" style="font-size: 0.8rem; text-decoration: none; padding: 4px 10px;">📄 Ver Factura</a>` : `<span style="color:#e53e3e;font-size:0.8rem;">Factura Dañada</span>`;
+
+                    tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 500;">${inv.invoice_number}</td>
+                        <td>
+                            ${inv.client_name}<br>
+                            <span style="font-size:0.8rem; color:#718096;">ID: ${inv.client_document}</span>
+                        </td>
+                        <td>${inv.package_name}</td>
+                        <td style="color:#718096; font-size:0.9rem;">${inv.issued_at}</td>
+                        <td style="font-weight: 600; color: #48bb78;">$${inv.total_amount}</td>
+                        <td>
+                            ${btnLink}
+                        </td>
+                    </tr>`;
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInstructors();
+            loadInvoices();
         });
     </script>
 </body>

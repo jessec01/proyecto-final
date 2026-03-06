@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const indicators = document.querySelectorAll('[data-step-indicator]');
     const summaryPanel = document.getElementById('summaryPanel');
     const toast = document.getElementById('toast');
-    const submitUrl = '/center_administrator/api/dashboard/config/initial/';
+    const submitUrl = '/center_administrator/api/dashboard/config/';
     let currentStep = 0;
     const wizardData = {};
 
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryPanel.innerHTML = `
             <div class="status-chip">Borrador actualizado</div>
             <p class="summary-note">
-                Paso ${currentStep + 1}/4 guardado. Puedes navegar sin perder la información.
+                Paso ${currentStep + 1}/${steps.length} guardado. Puedes navegar sin perder la información.
             </p>
         `;
     };
@@ -99,11 +99,50 @@ document.addEventListener('DOMContentLoaded', () => {
         // Guardamos explícitamente los datos del último paso
         persistStepData(steps[currentStep]);
 
+        // Transformar data especial requerida en formato JSON
+        if (wizardData.center) {
+            wizardData.center.hours_of_operation = {
+                days: "Monday, Tuesday, Wednesday, Thursday, Friday",
+                start_time: "08:00",
+                end_time: "20:00"
+            };
+        }
+
+        if (wizardData.rules) {
+            wizardData.rules.operator = "+";
+            wizardData.rules.type_rule = "payment";
+            if (wizardData.rules_payments && wizardData.rules_payments.comission_porcentage) {
+                wizardData.rules.value = wizardData.rules_payments.comission_porcentage;
+            } else {
+                wizardData.rules.value = 0;
+            }
+        }
+
+        if (wizardData.packages && wizardData.packages.duration_days) {
+            wizardData.packages.duration = { days: wizardData.packages.duration_days };
+            delete wizardData.packages.duration_days;
+        }
+
+        if (wizardData.classyoga && wizardData.classyoga.hour_start) {
+            const diasArray = wizardData.classyoga.days ? wizardData.classyoga.days.split(',').map(d => d.trim()) : ["Monday"];
+            wizardData.classyoga.schedules = {
+                days: diasArray,
+                hour_start: wizardData.classyoga.hour_start,
+                hour_end: wizardData.classyoga.hour_end,
+                modality: wizardData.classyoga.modality
+            };
+            delete wizardData.classyoga.days;
+            delete wizardData.classyoga.hour_start;
+            delete wizardData.classyoga.hour_end;
+            delete wizardData.classyoga.modality;
+        }
+
         try {
             const response = await fetch(submitUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
                     'X-CSRFToken': getCSRFToken()
                 },
                 body: JSON.stringify(wizardData)

@@ -1,0 +1,448 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Yogui - YogaSystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Reutilizamos el css bonito del center admin (sidebar, botones, inputs) -->
+    <link rel="stylesheet" href="{% static 'yogui/css/center_admin_dashboard.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'yogui/css/dashboard_initial_config.css' %}?v={% now 'U' %}">
+    <style>
+        .wizard-shell {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .hero {
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .nav-item {
+            cursor: pointer;
+        }
+
+        /* Estilos para lista de centros compress */
+        .centers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .center-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.2s;
+            border: 1px solid #eee;
+        }
+
+        .center-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .center-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #f4f4f4;
+        }
+
+        .center-body {
+            padding: 1.5rem;
+        }
+
+        .center-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .center-address {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .center-details {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .list-item {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-buy {
+            background: #7fb77e;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-buy:hover {
+            background: #5f9a60;
+        }
+
+        .btn-expand {
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem;
+            background: #edf2f7;
+            color: #4a5568;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-expand:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">YS</div>
+            <div class="logo-text">Yogui Space</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="nav-item active" onclick="switchTab('explore-tab', this)">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
+                </svg>
+                Explorar Centros
+            </a>
+            <a class="nav-item" onclick="switchTab('profile-tab', this)">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Mi Perfil
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="main-content hero">
+        <section class="wizard-shell" style="grid-template-columns: 1fr;">
+
+            <!-- Tab Explorar Centro -->
+            <div id="explore-tab" class="tab-content active">
+                <div class="section-label">Encuentra tu lugar</div>
+                <h2 class="section-title">Centros de Yoga Disponibles</h2>
+                <p style="color: #4a5568; font-size: 0.95rem;">Explora los centros y expande para ver clases y paquetes.
+                    🧘‍♂️</p>
+
+                <div class="centers-grid">
+                    {% for center in centers %}
+                    <div class="center-card">
+                        {% if center.photo %}
+                        <img src="{{ center.photo.url }}" class="center-img" alt="Foto de {{ center.name }}">
+                        {% else %}
+                        <div class="center-img flex-center"
+                            style="display:flex; align-items:center; justify-content:center; color:#a0aec0; background:#edf2f7;">
+                            Sin Imagen
+                        </div>
+                        {% endif %}
+
+                        <div class="center-body">
+                            <div class="center-title">{{ center.name }}</div>
+                            <div class="center-address">📍 {{ center.address }}</div>
+                            <p
+                                style="font-size: 0.85rem; color: #4a5568; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                {{ center.description }}
+                            </p>
+
+                            <!-- Seccion comprimida obligando a hacer click -->
+                            <div class="center-details" id="details-{{ center.id }}">
+                                <h4 style="font-size:0.9rem; color:#2d3748; margin-bottom: 0.5rem;">Información Completa
+                                </h4>
+                                <p style="font-size:0.85rem; color:#4a5568; margin-bottom: 1rem;">
+                                    <strong>Email:</strong> {{ center.email }}<br>
+                                    <strong>Teléfono:</strong> {{ center.phone }}<br>
+                                    <strong>Detalle:</strong> {{ center.description }}
+                                </p>
+
+                                <h4 style="font-size:0.9rem; color:#2d3748; margin-bottom: 0.5rem;">Clases y Paquetes
+                                </h4>
+                                <!-- Solo estructura de vista de lectura y simulación de compra -->
+                                <!-- Iteramos los paquetes reales de la BD -->
+                                {% for pkg in center.packages_set.all %}
+                                <div class="list-item">
+                                    <div>
+                                        <strong>{{ pkg.name }} - ${{ pkg.price }}</strong><br>
+                                        <span style="font-size:0.8rem; color:#718096;">Nivel: {{ pkg.level_package }} |
+                                            Tipo: {{ pkg.category }}</span>
+                                    </div>
+                                    <button class="btn-buy"
+                                        data-pkg-id="{{ pkg.id }}"
+                                        data-pkg-name="{{ pkg.name|escapejs }}"
+                                        data-pkg-price="{{ pkg.price }}">Comprar</button>
+                                </div>
+                                {% empty %}
+                                <div style="font-size: 0.85rem; color: #a0aec0; padding: 10px 0;">No hay paquetes
+                                    activos en este momento.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <button class="btn-expand" data-target="details-{{ center.id }}">
+                            🔍 Ver más detalles
+                        </button>
+                    </div>
+                    {% empty %}
+                    <div
+                        style="grid-column: 1/-1; padding: 2rem; background: white; border-radius: 12px; text-align: center; color: #718096;">
+                        Aún no hay centros de yoga registrados y activos en el sistema.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Tab Mi Perfil -->
+            <div id="profile-tab" class="tab-content">
+                <div class="section-label">Configuración Personal</div>
+                <h2 class="section-title">Mi Perfil Yogui</h2>
+                <form id="profileForm" class="wizard-form" enctype="multipart/form-data">
+                    <div>
+                        <div class="grid-two mt-1">
+                            <div>
+                                <label for="id_card">Cédula / Documento</label>
+                                <input id="id_card" name="id_card" type="text" placeholder="1234567" required />
+                            </div>
+                            <div>
+                                <label for="photo_profile">Foto de perfil</label>
+                                <input id="photo_profile" name="photo_profile" type="file" accept=".jpg,.jpeg,.png" />
+                            </div>
+                        </div>
+                        <div class="mt-1">
+                            <label for="level_suscribed">Nivel Actual</label>
+                            <!-- Mostrado desactivado pero con su respectivo input, el usuario puede verlo y un post podría editarlo de ser necesario -->
+                            <input id="level_suscribed" name="level_suscribed" type="text"
+                                placeholder="e.g. Principiante" value="Principiante" />
+                        </div>
+                    </div>
+
+                    <div class="note-card mt-2">
+                        Llena esta información para estar al día con tus centros inscritos.
+                    </div>
+                    <div class="nav-buttons">
+                        <button type="submit" class="btn-primary" id="btnSubmit">Guardar Perfil</button>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- MODAL DE COMPRA -->
+    <div id="buyModal"
+        style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div
+            style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; color: #2d3748; font-size: 1.4rem;">Confirmar Compra</h3>
+            <p style="color: #4a5568; margin-bottom: 15px;">Estás a punto de adquirir el paquete: <strong
+                    id="modalPkgName"></strong>.</p>
+            <p style="color: #4a5568; margin-bottom: 25px;">Monto total: <strong
+                    style="color: #48bb78; font-size: 1.2rem;">$<span id="modalPkgPrice"></span></strong></p>
+
+            <div
+                style="margin: 20px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <label style="display: flex; align-items: center; cursor: pointer; color: #4a5568;">
+                    <input type="checkbox" id="chkInvoice"
+                        style="width: 1.2rem; height: 1.2rem; margin-right: 10px; cursor: pointer;">
+                    <strong>Deseo generar mi factura legal en PDF</strong>
+                </label>
+            </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button class="btn-expand" style="width: auto; padding: 0.6rem 1.2rem; border-radius: 6px;"
+                    data-action="cancel">Cancelar</button>
+                <button class="btn-buy" id="btnConfirmPay" style="font-size: 1rem; padding: 0.6rem 1.5rem;"
+                    data-action="confirm">💰 Pagar Ahora</button>
+            </div>
+            <p id="buyMessage"
+                style="color: #48bb78; display: none; margin-top: 15px; font-weight: 600; text-align: center;"></p>
+        </div>
+    </div>
+
+    <script src="{% static 'yogui/js/profile.js' %}"></script>
+    <script>
+        // Variables para la compra
+        let currentPackageId = null;
+
+        // Tab controller logic
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // Toggle Details logic
+        function toggleDetails(id, btn) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+                btn.innerHTML = '🔍 Ver más detalles';
+            } else {
+                el.style.display = 'block';
+                btn.innerHTML = '⬆️ Ocultar detalles';
+            }
+        }
+
+        // MODAL COMPRAS
+        function abrirModalCompra(pkgId, pkgName, pkgPrice) {
+            currentPackageId = pkgId;
+            document.getElementById('modalPkgName').innerText = pkgName;
+            document.getElementById('modalPkgPrice').innerText = pkgPrice;
+            document.getElementById('buyMessage').style.display = 'none';
+            document.getElementById('chkInvoice').checked = false;
+            document.getElementById('btnConfirmPay').disabled = false;
+            document.getElementById('btnConfirmPay').innerText = '💰 Pagar Ahora';
+
+            const modal = document.getElementById('buyModal');
+            modal.style.display = 'flex';
+        }
+
+        function cerrarModalCompra() {
+            document.getElementById('buyModal').style.display = 'none';
+            currentPackageId = null;
+        }
+
+        async function confirmarCompra() {
+            if (!currentPackageId) return;
+
+            const wantInvoice = document.getElementById('chkInvoice').checked;
+            const btn = document.getElementById('btnConfirmPay');
+            const msg = document.getElementById('buyMessage');
+
+            btn.disabled = true;
+            btn.innerHTML = '⚙️ Procesando...';
+
+            try {
+                // LLAMADA AL ENDPOINT CREADO EN PAY/VIEWS.PY
+                const response = await fetch('/pay/process/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('access')}` // CORREGIDO AQUÍ: antes decía 'access_token'
+                    },
+                    body: JSON.stringify({
+                        package_id: currentPackageId,
+                        want_invoice: wantInvoice
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    msg.style.color = '#48bb78';
+                    let successText = data.message + '<br>¡Suscripción y Clases Activadas!';
+
+                    if (data.invoice_url) {
+                        successText += `<br><a href="${data.invoice_url}" target="_blank" style="display:inline-block; margin-top:10px; background:#e2e8f0; color:#2d3748; padding:5px 10px; border-radius:5px; text-decoration:none;">📄 Descargar Factura PDF</a>`;
+                        window.open(data.invoice_url, '_blank');
+                    }
+
+                    msg.innerHTML = successText;
+                    msg.style.display = 'block';
+                    btn.innerHTML = '✅ Éxito';
+
+                    // Ocultamos la ventana en 10 segundos y recargamos la pagina para ver el status actualizado
+                    setTimeout(() => {
+                        cerrarModalCompra();
+                        window.location.reload();
+                    }, 10000);
+                } else {
+                    msg.style.color = '#e53e3e';
+                    msg.innerHTML = `Error: ${data.error || 'Problema de procesamiento'}`;
+                    msg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = 'Intentar de Nuevo';
+                }
+            } catch (error) {
+                console.error(error);
+                msg.style.color = '#e53e3e';
+                msg.innerText = 'Error de conexión con el servidor.';
+                msg.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'Intente de nuevo';
+            }
+        }
+        
+        // Delegated handlers for buttons that use data-* attributes (avoids inline JS parsing issues)
+        document.addEventListener('click', function (e) {
+            // Action buttons (confirm/cancel) have priority to avoid conflicts with .btn-buy
+            const actionBtn = e.target.closest('[data-action]');
+            if (actionBtn) {
+                const action = actionBtn.dataset.action;
+                if (action === 'cancel') {
+                    cerrarModalCompra();
+                } else if (action === 'confirm') {
+                    confirmarCompra();
+                }
+                return;
+            }
+
+            // Comprar button (open modal)
+            const buyBtn = e.target.closest('.btn-buy');
+            if (buyBtn && buyBtn.dataset.pkgId) {
+                const id = buyBtn.dataset.pkgId;
+                const name = buyBtn.dataset.pkgName;
+                const price = buyBtn.dataset.pkgPrice;
+                abrirModalCompra(id, name, price);
+                return;
+            }
+
+            // Expand details button
+            const expandBtn = e.target.closest('.btn-expand');
+            if (expandBtn && expandBtn.dataset.target) {
+                const target = expandBtn.dataset.target;
+                toggleDetails(target, expandBtn);
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

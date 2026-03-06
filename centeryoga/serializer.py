@@ -10,16 +10,7 @@ from phonenumber_field.phonenumber import to_python
 from rest_framework import serializers   
 
 #importaciones de modelos
-from center_administration.models import CenterAdministrator
-from center_administration.serializer import CenterAdministratorSerializer
 from .models import YogaCenter
-from rules.serializer import RulesSerializer
-from rules.models import Rules
-from rules_payments.serializer import RulesPaymentSerializer
-from rules_payments.models import RulesPayment
-from rules_packages.serializer import RulesPackagesSerializer
-from rules_packages.models import RulesPackages
-
 
 # Serializer for YogaCenter model
 class YogaCenterSerializer(serializers.Serializer):
@@ -29,6 +20,7 @@ class YogaCenterSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=200)
     phone = serializers.CharField(max_length=20)
     email = serializers.EmailField(max_length=100)
+    capacity = serializers.IntegerField()
     hours_of_operation = serializers.JSONField()
     photo = serializers.ImageField(max_length=256,        # Longitud máxima del nombre
         allow_empty_file=False, # No permitir archivos vacíos
@@ -38,10 +30,10 @@ class YogaCenterSerializer(serializers.Serializer):
     at_creation = serializers   .DateTimeField( read_only=True)
     def validate_code(self, value:str)->str:
         """ Validacion del codigo del centro de yoga """
-        code_validation = re.search('^[A-Z0-9]{10}$', value)
+        code_validation = re.search(r'^[A-Za-z0-9]{4,20}$', value)
         if not code_validation:
-            raise serializers.ValidationError({"code": "Code must be 10 characters long and contain only uppercase letters and numbers."})
-        return value
+            raise serializers.ValidationError({"code": "Code must be between 4 and 20 alphanumeric characters."})
+        return value.upper()
     def validate_hours_of_operation(self, value:dict)->dict:
         """ Validacion de las horas de operacion del centro de yoga """
         if not isinstance(value, dict):
@@ -64,15 +56,13 @@ class YogaCenterSerializer(serializers.Serializer):
         return value    
     def validate_name(self, value:str)->str:
         """ Validacion del nombre del centro de yoga """
-        name_validation = re.search(r'^[a-zA-Z\s]{4,100}$', value)
+        name_validation = re.search(r'^[\w\sáéíóúÁÉÍÓÚñÑ]{4,100}$', value)
         if not name_validation:
-            raise serializers.  ValidationError({"name": "Name must be between 4 and 100 characters long and contain only letters and spaces."})
+            raise serializers.ValidationError({"name": "Name must be between 4 and 100 characters long and contain only letters and spaces."})
         return value
     def validate_address(self, value:str)->str:
         """ Validacion de la direccion del centro de yoga """
-        #para actualizaciones futuras se pueden agregar validaciones mas especificas dependiendo de las politicas del centro de yoga
-        #ademas de restricciones con validacion de localidades reales
-        address_validation = re.search(r'^[a-zA-Z0-9\s,.-]{10,200}$', value)
+        address_validation = re.search(r'^[\w\s,.\-áéíóúÁÉÍÓÚñÑ+#/()]{10,200}$', value)
         if not address_validation:
             raise serializers.ValidationError({"address": "Address must be between 10 and 200 characters long and can contain letters, numbers, spaces, commas, periods, and hyphens."})
         return value    
@@ -94,9 +84,9 @@ class YogaCenterSerializer(serializers.Serializer):
             raise serializers.ValidationError({"photo": "Invalid file type. Only .jpg, .jpeg, and .png are allowed."})
         return value_photo    
     def validate_description(self,value_description:str)->str:
-        description=re.search(r'^[a-zA-Z\s]{4,500}$',value_description)
+        description=re.search(r'^[\w\s.,;:!¡?¿\'"áéíóúÁÉÍÓÚñÑüÜ()\-+%#&/]{4,500}$',value_description)
         if not description:
-            raise   serializers.ValidationError({"description": "invalid description"})
+            raise serializers.ValidationError({"description": "invalid description"})
         return value_description
     def create(self, validated_data:dict)->YogaCenter:
         code=validated_data.get('code')
@@ -104,6 +94,7 @@ class YogaCenterSerializer(serializers.Serializer):
         address=validated_data.get('address')
         phone=validated_data.get('phone')
         email=validated_data.get('email')
+        capacity=validated_data.get('capacity')
         hours_of_operation=validated_data.get('hours_of_operation')
         photo=validated_data.get('photo')
         description=validated_data.get('description')
@@ -113,6 +104,7 @@ class YogaCenterSerializer(serializers.Serializer):
                 address=address,
                 phone=phone,
                 email=email,
+                capacity=capacity,
                 hours_of_operation=hours_of_operation,
                 photo=photo,
                 description=description
@@ -132,7 +124,7 @@ class YogaCenterSerializer(serializers.Serializer):
 class ListCenterSerializer(serializers.ModelSerializer):
     class Meta:
         model = YogaCenter
-        fields = ['name', 'address', 'phone', 'email', 'hours_of_operation', 'photo', 'description']
+        fields = ['id', 'code', 'name', 'capacity', 'address', 'phone', 'email', 'hours_of_operation', 'photo', 'description']
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['photo'] = instance.photo.url if instance.photo else None
@@ -146,7 +138,7 @@ class ListCenterSerializer(serializers.ModelSerializer):
 class DetailCenterSerializer(serializers.ModelSerializer):
     class Meta:
         model = YogaCenter
-        fields = ['name', 'address', 'phone', 'email', 'hours_of_operation', 'photo', 'description']
+        fields = ['id', 'code', 'name', 'capacity', 'address', 'phone', 'email', 'hours_of_operation', 'photo', 'description']
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['photo'] = instance.photo.url if instance.photo else None
@@ -162,7 +154,7 @@ class DetailCenterSerializer(serializers.ModelSerializer):
 class UpdateCenterSerializer(serializers.ModelSerializer):
     class Meta:
         model = YogaCenter
-        fields = ['name', 'address', 'phone', 'email', 'hours_of_operation', 'photo', 'description']
+        fields = ['code', 'name', 'capacity', 'address', 'phone', 'email', 'hours_of_operation', 'photo', 'description']
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['photo'] = instance.photo.url if instance.photo else None
@@ -173,33 +165,3 @@ class UpdateCenterSerializer(serializers.ModelSerializer):
         representation['address'] = instance.address if instance.address else None
         representation['name'] = instance.name if instance.name else None
         return representation  
-""" Clases de serializadores para el centro de yoga
-    Logica pendiente en actualizar la logica de creacion del centro de yoga
-"""
-"""
-class MasterSerializer(serializers.Serializer):
-    #Serializador maestro para la creacion de un centro de yoga con todas sus reglas y administrador 
-    center=CenterSerializer()
-    rules =  RulesSerializer()
-    rules_packages = RulesPackagesSerializer()
-    rules_payments = RulesPaymentSerializer()
-    center_administrator = CenterAdministratorSerializer()
-    def create(self, validated_data):
-        #extraccion de la informacion de las reglas y del administrador del centro para crear las instancias correspondientes antes de crear el centro de yoga, esto se hace para asegurar la integridad de los datos y las relaciones entre las diferentes entidades del sistema.
-        user=validated_data.pop('user')
-        center=validated_data.pop('center')
-        admin_center_data = validated_data.pop('center_administrator')
-        rules_data = validated_data.pop('rules')
-        rules_packages_data = validated_data.pop('rules_packages')
-        rules_payments_data = validated_data.pop('rules_payments')
-        #creacion de los modelos dependientes antes de crear el centro de yoga
-        with transaction.atomic():           
-            yoga_center=YogaCenter.objects.create(**center)
-            center_administrator = CenterAdministrator.objects.create(user=user, **admin_center_data)
-            object_rules = Rules.objects.create(center=yoga_center, **rules_data)
-            object_rules_packages = RulesPackages.objects.create(rules=object_rules, **rules_packages_data)
-            object_rules_payments = RulesPayment.objects.create(rules=object_rules, **rules_payments_data)
-            #modificar el estado center para que se active una vez que se hayan creado todas las entidades relacionadas                                                
-            center_administrator.activate_profile()
-        return yoga_center
-"""

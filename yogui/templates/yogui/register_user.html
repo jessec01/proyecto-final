@@ -1,24 +1,28 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Registro Yogui - YogaSystem</title>
   {% load static %}
-  <link rel="stylesheet" href="{% static 'userYC/css/register.css' %}">
+  <link rel="stylesheet" href="{% static 'yogui/css/register.css' %}?v=1">
 </head>
+
 <body>
   <main class="container">
     <h1>Crear cuenta - Yogui</h1>
     <p class="hint">Rellena los datos para crear una cuenta de yogui.</p>
 
-    <form id="registerForm" method="post"  action="{% url 'read_form' %}" data-success-url="{% url 'yogui_login' %}">
+    <form id="registerForm" method="post" action="{% url 'yogui_register_submit' %}"
+      data-success-url="{% url 'yogui_login' %}">
       {% csrf_token %}
       <label for="email">Correo electrónico</label>
       <input id="email" name="email" type="email" placeholder="yogui@ejemplo.com" required>
 
       <label for="username">Nombre de usuario</label>
-      <input id="username" name="username" type="text" placeholder="usuario_yogui" minlength="4" maxlength="16" required>
+      <input id="username" name="username" type="text" placeholder="usuario_yogui" minlength="4" maxlength="16"
+        required>
 
       <label for="first_name">Nombre</label>
       <input id="first_name" name="first_name" type="text" placeholder="Nombre" minlength="4" maxlength="16" required>
@@ -33,11 +37,23 @@
       <input id="password" name="password" type="password" minlength="8" maxlength="64" required>
 
       <label for="confirmation_password">Confirmar contraseña</label>
-      <input id="confirmation_password" name="confirmation_password" type="password" minlength="8" maxlength="64" required>
+      <input id="confirmation_password" name="confirmation_password" type="password" minlength="8" maxlength="64"
+        required>
 
       <button type="submit">Crear cuenta</button>
+
+      <div style="text-align: center; margin-top: 15px;">
+        <a href="{% url 'yogui_dashboard' %}"
+          style="display: block; padding: 10px; border-radius: 4px; border: 1px solid #7fb77e; color: #7fb77e; text-decoration: none; font-weight: bold; transition: background 0.3s; text-align: center;">Volver
+          al Dashboard</a>
+      </div>
+      <div style="text-align: center; margin-top: 10px;">
+        <span style="font-size: 0.9em; color: #666;">¿Ya tienes cuenta? <a href="{% url 'yogui_login' %}"
+            style="color: #7fb77e; text-decoration: none; font-weight: bold;">Inicia Sesión</a></span>
+      </div>
     </form>
   </main>
   <script src="{% static 'yogui/js/register.js' %}"></script>
 </body>
+
 </html>

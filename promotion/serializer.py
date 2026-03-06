@@ -17,14 +17,14 @@ class PromotionSerializer(serializers.Serializer):
 
     def validate_name(self, value: str) -> str:
         """Validate name"""
-        if not re.match(r'^[a-zA-Z0-9 ]+$', value):
+        if not re.match(r'^[\w\sáéíóúÁÉÍÓÚñÑ]+$', value):
             raise serializers.ValidationError('Name must contain only letters and numbers')
         return value
 
     def validate_description(self, value: str) -> str:
         """Validate description"""
-        if not re.match(r'^[a-zA-Z0-9 ]+$', value):
-            raise serializers.ValidationError('Description must contain only letters and numbers')
+        if not re.match(r'^[\w\s.,;:!¡?¿\'"áéíóúÁÉÍÓÚñÑüÜ()\-+%#&/]+$', value):
+            raise serializers.ValidationError('Description must contain valid characters')
         return value
 
     def validate_discount_value(self, value) -> float:

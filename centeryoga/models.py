@@ -9,6 +9,7 @@ class YogaCenter(models.Model):
     email=models.EmailField(max_length=100)
     photo=models.ImageField(upload_to='static/img/', null=True, blank=True)
     description=models.TextField()
+    capacity=models.IntegerField()
     active=models.BooleanField(default=True)
     hours_of_operation=models.JSONField()
     at_creation=models.DateTimeField(auto_now_add=True)
@@ -23,3 +24,4 @@ class YogaCenter(models.Model):
         return self.instructor_set.all()
     def see_list_of_yoguis(self):
         return self.yogui_set.all()
+   

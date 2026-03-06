@@ -5,13 +5,10 @@ from phonenumber_field.phonenumber import to_python
 from django.db import transaction
 class UserYCSerializer(serializers.ModelSerializer):
     confirmation_password = serializers.CharField(write_only=True)
-    is_center_administrator = serializers.BooleanField(default=False,write_only=True)  
-    is_instructor = serializers.BooleanField(default=False,write_only=True)
-    is_yogui = serializers.BooleanField(default=False,write_only=True)
     class Meta:
         model = User    
-        fields = ['username','email','first_name','last_name','phone',
-        'password','is_yogui','is_instructor','is_center_administrator','confirmation_password']
+        fields = ['id', 'username','email','first_name','last_name','phone',
+        'password','confirmation_password']
        
     
     def validate_username(self,value_username):
@@ -24,12 +21,12 @@ class UserYCSerializer(serializers.ModelSerializer):
             pass
         return value_username 
     def validate_first_name(self,value_first_name):
-        first_name=re.search('^[a-zA-Z]{4,16}$',value_first_name)
+        first_name=re.search(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$',value_first_name)
         if not first_name:
             raise serializers.ValidationError({"first name": "invalid name"})
         return value_first_name 
     def validate_last_name(self,value_last_name):
-        last_name=re.search('^[a-zA-Z]{4,16}$',value_last_name)
+        last_name=re.search(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,50}$',value_last_name)
         if not last_name:
             raise serializers.ValidationError({"last_name": "invalid last name"})
         return value_last_name 
@@ -89,4 +86,40 @@ class UserYCSerializer(serializers.ModelSerializer):
             )
             user.activate_user()
             return user
+    def update(self,instance,validated_data):
+        instance.username=validated_data.get('username', instance.username)
+        instance.email=validated_data.get('email', instance.email)
+        instance.first_name=validated_data.get('first_name', instance.first_name)     
+        instance.last_name=validated_data.get('last_name', instance.last_name)
+        instance.phone=validated_data.get('phone', instance.phone)
+        
+        # update password using set_password if provided
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+            
+        instance.is_center_administrator=validated_data.get('is_center_administrator', instance.is_center_administrator)
+        instance.is_instructor=validated_data.get('is_instructor', instance.is_instructor)
+        instance.is_yogui=validated_data.get('is_yogui', instance.is_yogui)
+        instance.save()
+        return instance
 
+class ListUserYCSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User    
+        fields = ['username','email','first_name','last_name','phone']
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['is_center_administrator'] = instance.is_center_administrator
+        representation['is_instructor'] = instance.is_instructor
+        representation['is_yogui'] = instance.is_yogui
+        return representation
+class DetailUserYCSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User    
+        fields = ['username','email','first_name','last_name','phone','is_yogui','is_instructor','is_center_administrator']
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['is_center_administrator'] = instance.is_center_administrator
+        representation['is_instructor'] = instance.is_instructor
+        representation['is_yogui'] = instance.is_yogui
+        return representation

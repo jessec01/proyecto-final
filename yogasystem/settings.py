@@ -54,12 +54,18 @@ INSTALLED_APPS = [
     'rules',
     'rest_framework',
     'packages',
+    'classyoga',
     'classyogui',
     'rulescenter',
     'rulespackages',
     'rulespayment',
     'pay',
-    'policy'
+    'policy',
+    'promotion',
+    'invoice',
+    'subscription',
+    'packagessubscription',
+    'django_extensions',
 
 ]
 PHONENUMBER_DEFAULT_REGION='VE'  # Venezuela

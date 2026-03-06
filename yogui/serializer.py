@@ -4,40 +4,12 @@ import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 class YoguiSerializer(serializers.ModelSerializer):
-    is_yogui = serializers.BooleanField(default=True,write_only=True)
-    is_instructor = serializers.BooleanField(default=False,write_only=True)
-    is_center_administrator = serializers.BooleanField(default=False,write_only=True)
     class Meta:
         model = Yogui
-        fields = ['user','at_creation','photo_profile','description'] 
-        read_only_fields = ['user','at_creation']
-    def validate_description(self,value_description):
-        description=re.search(r'^[a-zA-Z\s]{4,500}$',value_description)
-        if not description:
-            raise serializers.ValidationError({"description": "invalid description"})
-        return value_description
-    def validate_photo_profile(self, value_photo_profile):
-        if value_photo_profile and not value_photo_profile.name.lower().endswith(('.jpg', '.jpeg', '.png')):
-            raise serializers.ValidationError({"photo_profile": "Invalid file type. Only .jpg, .jpeg, and .png are allowed."})
-        return value_photo_profile    
+        fields = ['id', 'user', 'id_card', 'level_suscribed', 'photo_profile'] 
+        read_only_fields = ['user']
     def create(self, validated_data):
-        user=validated_data.get('user')
-        description=validated_data.get('description')
-        photo_profile=validated_data.get('photo_profile')
-        is_yogui=validated_data.get('is_yogui', True)
-        is_instructor=validated_data.get('is_instructor', False)
-        is_center_administrator=validated_data.get('is_center_administrator', False)
-
-        yogui=Yogui.objects.create(
-            user=user,
-            description=description,
-            photo_profile=photo_profile,
-            is_yogui=is_yogui,
-            is_instructor=is_instructor,
-            is_center_administrator=is_center_administrator
-        )
-        return yogui
-
+        return super().create(validated_data)
 class ReadLoginFormSerializer(serializers.Serializer):
     class Meta:
         model = Yogui
@@ -60,5 +32,5 @@ class YoguiTokenSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         # Una vez validada la contraseña, verificamos el rol
         if not self.user.is_yogui:
-            raise AuthenticationFailed('No tienes permisos de Administrador de Centro para iniciar sesión aquí.')
+            raise AuthenticationFailed('No tienes permisos de Yogui para iniciar sesión aquí.')
         return data

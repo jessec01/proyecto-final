@@ -52,6 +52,20 @@
                     <small>Accesos, promociones y vigencia.</small>
                 </div>
             </div>
+            <div class="step-pill" data-step-indicator="4">
+                <span>05</span>
+                <div>
+                    <strong>Paquetes de Yoga</strong>
+                    <small>Creación de tarifa principal.</small>
+                </div>
+            </div>
+            <div class="step-pill" data-step-indicator="5">
+                <span>06</span>
+                <div>
+                    <strong>Políticas y Clases</strong>
+                    <small>Normas y clase inaugural.</small>
+                </div>
+            </div>
             <div class="summary-panel" id="summaryPanel">
                 <div class="status-chip">Borrador vivo</div>
                 <p class="summary-note">
@@ -83,7 +97,7 @@
                     </div>
                     <div data-entity="center_administrator" class="mt-1">
                         <label for="adminBio">Mensaje de bienvenida</label>
-                        <textarea id="adminBio" name="statement"
+                        <textarea id="adminBio" name="welcome_message"
                             placeholder="Comparte la visión del centro y qué esperas de la comunidad."
                             required></textarea>
                     </div>
@@ -209,19 +223,166 @@
                 <div class="section-label">Paso 4</div>
                 <h2 class="section-title">Reglas de paquetes y accesos</h2>
                 <form class="wizard-form" data-step-form>
-                    <div data-entity="rules_packages">
+                    <div data-entity="packages">
+                        <h3 class="section-subtitle">Paquete de Yoga Inicial</h3>
                         <div class="grid-two">
                             <div>
-                                <label for="packagePromo">% de promoción sobre tarifa</label>
-                                <input id="packagePromo" name="promotion_porcentage" type="number" min="0" max="100"
-                                    step="0.01" data-type="float" placeholder="10" required />
+                                <label for="pkgName">Nombre del paquete</label>
+                                <input id="pkgName" name="name" placeholder="Plan Mensual Ilimitado" required />
                             </div>
                             <div>
-                                <label for="packageAccess">Duración de acceso (días)</label>
-                                <input id="packageAccess" name="access_duration" type="number" min="1"
-                                    data-type="number" placeholder="30" required />
+                                <label for="pkgPrice">Precio</label>
+                                <input id="pkgPrice" name="price" type="number" step="0.01" data-type="float"
+                                    placeholder="50.00" required />
+                            </div>
+                            <div>
+                                <label for="pkgLevel">Nivel</label>
+                                <select id="pkgLevel" name="level_package">
+                                    <option value="beginner" selected>Principiante</option>
+                                    <option value="intermediate">Intermedio</option>
+                                    <option value="advanced">Avanzado</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="pkgCategory">Categoría</label>
+                                <select id="pkgCategory" name="category">
+                                    <option value="monthly" selected>Mensual</option>
+                                    <option value="yearly">Anual</option>
+                                    <option value="single">Único</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="pkgStack">Stack Class</label>
+                                <select id="pkgStack" name="stackclass">
+                                    <option value="class" selected>Clase</option>
+                                    <option value="packages">Paquetes</option>
+                                    <option value="suscription">Suscripción</option>
+                                </select>
                             </div>
                         </div>
+                        <label for="pkgDesc" class="mt-1">Descripción del paquete</label>
+                        <textarea id="pkgDesc" name="description" placeholder="Acceso completo durante el mes..."
+                            required></textarea>
+
+                        <!-- Duración especial JSON (js lo maneja) -->
+                        <div class="mt-1">
+                            <label for="pkgDuration">Duración en Días</label>
+                            <input id="pkgDuration" name="duration_days" type="number" data-type="number"
+                                placeholder="30" required />
+                        </div>
+                    </div>
+                </form>
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" data-prev>Anterior</button>
+                    <button type="button" class="btn-primary" data-next>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="wizard-content" data-step="4">
+                <div class="section-label">Paso 5</div>
+                <h2 class="section-title">Promociones Iniciales</h2>
+                <form class="wizard-form" data-step-form>
+                    <div data-entity="promotion">
+                        <div class="grid-two">
+                            <div>
+                                <label for="promName">Nombre Promoción</label>
+                                <input id="promName" name="name" placeholder="Descuento Bienvenida" required />
+                            </div>
+                            <div>
+                                <label for="promType">Tipo de descuento</label>
+                                <input id="promType" name="discount_type" value="porcentaje" required />
+                            </div>
+                            <div>
+                                <label for="promVal">Valor Descuento</label>
+                                <input id="promVal" name="discount_value" type="number" step="0.5" data-type="float"
+                                    placeholder="10" required />
+                            </div>
+                            <div>
+                                <label for="promAct">Activa</label>
+                                <select id="promAct" name="active">
+                                    <option value="true" selected>Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label for="promDesc" class="mt-1">Descripción de la promoción</label>
+                        <textarea id="promDesc" name="description"
+                            placeholder="Descuento aplicado al primer mes de suscripción" required></textarea>
+                    </div>
+                </form>
+                <div class="nav-buttons">
+                    <button type="button" class="btn-secondary" data-prev>Anterior</button>
+                    <button type="button" class="btn-primary" data-next>Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="wizard-content" data-step="5">
+                <div class="section-label">Paso 6</div>
+                <h2 class="section-title">Políticas y Tu Primera Clase</h2>
+                <form class="wizard-form" data-step-form>
+                    <div data-entity="policy" class="grid-two">
+                        <!-- Checkboxes para politicas -->
+                        <div>
+                            <label>
+                                <input type="checkbox" name="is_refundable" /> Es reembolsable
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="is_transferable" /> Es transferible
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="is_discountable" /> Es descontable
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="is_acumulative" /> Es acumulativo
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="is_active_suspension" /> Permite suspensión activa
+                            </label>
+                        </div>
+                    </div>
+                    <hr style="margin:20px 0; border:1px solid #eee;">
+                    <div data-entity="classyoga">
+                        <h3 class="section-subtitle">Clase Inaugural</h3>
+                        <div class="grid-two">
+                            <div>
+                                <label for="clsName">Nombre de Clase</label>
+                                <input id="clsName" name="name" placeholder="Hatha Yoga Principiantes" required />
+                            </div>
+                            <div>
+                                <label for="clsCat">Categoría</label>
+                                <input id="clsCat" name="category" placeholder="Hatha" required />
+                            </div>
+                            <div>
+                                <label for="clsStart">Hora de Inicio</label>
+                                <input id="clsStart" name="hour_start" type="time" required />
+                            </div>
+                            <div>
+                                <label for="clsEnd">Hora Fin</label>
+                                <input id="clsEnd" name="hour_end" type="time" required />
+                            </div>
+                            <div>
+                                <label for="clsMod">Modalidad</label>
+                                <input id="clsMod" name="modality" placeholder="Presencial" required />
+                            </div>
+                            <div>
+                                <label for="clsDays">Día de la semana</label>
+                                <input id="clsDays" name="days" placeholder="Monday" required />
+                            </div>
+                        </div>
+                        <label for="clsDesc" class="mt-1">Descripción de la Clase</label>
+                        <textarea id="clsDesc" name="description"
+                            placeholder="Clase especial de bienvenida con énfasis en respiración..."
+                            required></textarea>
                     </div>
                 </form>
                 <div class="nav-buttons">

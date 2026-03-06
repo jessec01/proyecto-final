@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración de Centro</title>
+    <!-- Reutilizamos el css bonito del wizard inicial y el de dashboard para la barra lateral -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/center_admin_dashboard.css' %}?v={% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_initial_config.css' %}?v={% now 'U' %}" />
+    <style>
+        .wizard-shell {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .wizard-content {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+        }
+
+        .hero {
+            margin-left: 260px;
+            /* offset sidebar */
+            padding: 20px;
+        }
+
+        .btn-return {
+            float: right;
+            margin-top: -45px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">YC</div>
+            <div class="logo-text">Yoga Center</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard_main' %}" class="nav-item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
+                </svg>
+                Vista General
+            </a>
+
+            <a href="{% url 'center_admin_profile' %}" class="nav-item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Mi Perfil
+            </a>
+
+            <a href="{% url 'center_admin_center_edit' %}" class="nav-item active">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Configurar Centro
+            </a>
+
+            <a href="{% url 'center_admin_packages' %}" class="nav-item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                </svg>
+                Paquetes de Yoga
+            </a>
+
+            <a href="{% url 'center_admin_promotions' %}" class="nav-item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                Promociones
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="main-content hero">
+        <section class="wizard-shell" style="grid-template-columns: 1fr;">
+            <div class="wizard-content active">
+                <div class="section-label">Configuración Local</div>
+                <h2 class="section-title">Actualizar Datos del Centro</h2>
+
+                <a href="{% url 'dashboard_main' %}" class="btn-secondary btn-return">← Volver al Dashboard</a>
+
+                <form id="centerForm" method="put" action="/api/centeryoga/" class="wizard-form"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div>
+                        <div class="grid-two">
+                            <div>
+                                <label for="centerCode">Código interno</label>
+                                <input id="centerCode" name="code" maxlength="10" placeholder="ZEN0000001" readonly />
+                                <small>No modificable</small>
+                            </div>
+                            <div>
+                                <label for="centerName">Nombre comercial</label>
+                                <input id="centerName" name="name" placeholder="Yogui Flow Altamira" required />
+                            </div>
+                            <div>
+                                <label for="centerAddress">Dirección</label>
+                                <input id="centerAddress" name="address" placeholder="Av. Libertador, nivel mezzanina"
+                                    required />
+                            </div>
+                            <div>
+                                <label for="centerPhone">Teléfono</label>
+                                <input id="centerPhone" name="phone" placeholder="+58 000 000" required />
+                            </div>
+                            <div>
+                                <label for="centerEmail">Correo del centro</label>
+                                <input id="centerEmail" name="email" type="email" placeholder="contacto@centroyoga.com"
+                                    required />
+                            </div>
+                            <div>
+                                <label for="centerCapacity">Capacidad máxima</label>
+                                <input id="centerCapacity" name="capacity" type="number" min="1" placeholder="45"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="mt-1">
+                            <label for="centerPhoto">Foto del centro</label>
+                            <input id="centerPhoto" name="photo" type="file" accept=".jpg,.jpeg,.png" />
+                        </div>
+                        <div class="mt-1">
+                            <label for="centerDescription">Descripción breve</label>
+                            <textarea id="centerDescription" name="description"
+                                placeholder="Describe ambiente, estilo de clases..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons mt-2">
+                        <button type="submit" class="btn-primary" id="btnSubmit">Guardar Cambios del Centro</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script provisional para botones de cierre de sesión -->
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const refreshToken = localStorage.getItem('refresh');
+            if (refreshToken) {
+                await fetch('/center_administrator/logout/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh: refreshToken })
+                });
+            }
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            window.location.href = '/center_administrator/login/';
+        });
+
+        let currentCenterId = null;
+
+        // Cargar datos actuales del centro
+        async function loadCenterData() {
+            const token = localStorage.getItem('access');
+            if (!token) return;
+
+            try {
+                // Sacar ID de yoga_center asociado al admin logueado
+                const profileRes = await fetch('/center_administrator/api/center_administrator/', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (profileRes.status === 401) {
+                    alert("Tu sesión ha expirado por seguridad. Por favor, inicia sesión de nuevo.");
+                    window.location.href = '/center_administrator/login/';
+                    return;
+                }
+                if (!profileRes.ok) throw new Error('No se pudo obtener el perfil del admin actual');
+                const profiles = await profileRes.json();
+                if (profiles.length === 0) throw new Error('No hay un centro de yoga asociado activo');
+
+                currentCenterId = profiles[0].yoga_center;
+
+                // Consultar API del centro usando ese ID
+                const centerRes = await fetch(`/centeryoga/centers/${currentCenterId}/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!centerRes.ok) throw new Error('Fallo trayendo detalles de la API /centeryoga/');
+
+                const center = await centerRes.json();
+                // Popular los inputs visualmente
+                document.getElementById('centerCode').value = center.code || '';
+                document.getElementById('centerName').value = center.name || '';
+                document.getElementById('centerAddress').value = center.address || '';
+                document.getElementById('centerPhone').value = center.phone || '';
+                document.getElementById('centerEmail').value = center.email || '';
+                document.getElementById('centerCapacity').value = center.capacity || '';
+                document.getElementById('centerDescription').value = center.description || '';
+            } catch (error) {
+                console.error("Error cargando centro:", error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCenterData);
+
+        // Guardar cambios emitidos en el form
+        document.getElementById('centerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentCenterId) {
+                alert("Aún no se ha identificado el identificador del centro."); return;
+            }
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            btnSubmit.innerHTML = "Guardando..."; btnSubmit.disabled = true;
+
+            const token = localStorage.getItem('access');
+            const formData = new FormData();
+            formData.append('name', document.getElementById('centerName').value);
+            formData.append('address', document.getElementById('centerAddress').value);
+            formData.append('phone', document.getElementById('centerPhone').value);
+            formData.append('email', document.getElementById('centerEmail').value);
+            formData.append('capacity', document.getElementById('centerCapacity').value);
+            formData.append('description', document.getElementById('centerDescription').value);
+
+            const photoInput = document.getElementById('centerPhoto');
+            if (photoInput.files.length > 0) {
+                formData.append('photo', photoInput.files[0]);
+            }
+
+            try {
+                // Hacer el PATCH (Modificación parcial)
+                const res = await fetch(`/centeryoga/centers/${currentCenterId}/`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }, // FormData no necesita content-type
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(JSON.stringify(err));
+                }
+
+                alert("Datos del Yoga Center actualizados de manera exitosa! 🌱");
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Hubo un incordio al actualizar: " + error.message);
+            } finally {
+                btnSubmit.innerHTML = "Guardar Cambios del Centro"; btnSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

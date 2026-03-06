@@ -1,5 +1,5 @@
 # urls.py (del proyecto principal o de tu app de usuarios)
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -7,12 +7,18 @@ from rest_framework_simplejwt.views import (
 from .views import RegisterUserView
 from .views import ReadFormView, LoginView,  LogoutView, RegisterProfileView,ReadFormProfileView, YoguiDashboardView
 from .views import YoguiLoginView
+from rest_framework import routers
+from .views import YoguiProfileViewSet
+
+router = routers.DefaultRouter()
+router.register(r'api/profile', YoguiProfileViewSet, basename='yogui-profile')
+
 urlpatterns = [
-    
+    path('', include(router.urls)),
     # URL para mostrar el formulario de registro
-    path('register/', RegisterUserView.as_view(), name='register'),
+    path('register/', RegisterUserView.as_view(), name='yogui_register'),
     # URL para procesar el formulario de registro
-    path('api/register/', ReadFormView.as_view(), name='register_submit'),
+    path('api/register/', ReadFormView.as_view(), name='yogui_register_submit'),
     #url para formulario de login
     path('login/',LoginView.as_view(), name='yogui_login'), 
     # URL para obtener el token JWT (login)

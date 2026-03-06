@@ -19,11 +19,19 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from django.urls import include
 #from django.urls import include
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", TemplateView.as_view(template_name="yogasystem/home.html")),
+    path("", TemplateView.as_view(template_name="yogasystem/home.html"),name='main_home'),
     path("api/",include("userYC.urls")),
     path("center_administrator/", include("center_administration.urls")),
     path("yogui/", include("yogui.urls")),
-    
+    path("instructor/", include("instructor.urls")),
+    path("centeryoga/", include("centeryoga.urls")),
+    path("pay/", include("pay.urls")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

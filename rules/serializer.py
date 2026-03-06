@@ -17,12 +17,12 @@ class RulesSerializer(serializers.Serializer):
     type_rule=serializers.CharField(write_only=True)
     at_creation = serializers.DateTimeField(read_only=True)
     def validate_name(self, value:str)->str:
-        name_validation = re.search(r'^[a-zA-Z\s]{4,100}$', value)
+        name_validation = re.search(r'^[\w\sáéíóúÁÉÍÓÚñÑ]{4,100}$', value)
         if not name_validation:
             raise serializers.ValidationError({"name": "Name must be between 4 and 100 characters long and contain only letters and spaces."})
         return value
     def validate_description(self, value:str)->str:
-        description_validation = re.search(r'^[a-zA-Z\s]{4,500}$', value)
+        description_validation = re.search(r'^[\w\s.,;:!¡?¿\'"áéíóúÁÉÍÓÚñÑüÜ()\-+%#&/]{4,500}$', value)
         if not description_validation:
             raise serializers.ValidationError({"description": "Description must be between 4 and 500 characters long and contain only letters and spaces."})
         return value
@@ -47,12 +47,12 @@ class RulesUpdateSerializer(serializers.Serializer):
     type_rule=serializers.CharField(write_only=True)
     at_creation = serializers.DateTimeField(read_only=True)
     def validate_name(self, value:str)->str:
-        name_validation = re.search(r'^[a-zA-Z\s]{4,100}$', value)
+        name_validation = re.search(r'^[\w\sáéíóúÁÉÍÓÚñÑ]{4,100}$', value)
         if not name_validation:
             raise serializers.ValidationError({"name": "Name must be between 4 and 100 characters long and contain only letters and spaces."})
         return value
     def validate_description(self, value:str)->str:
-        description_validation = re.search(r'^[a-zA-Z\s]{4,500}$', value)
+        description_validation = re.search(r'^[\w\s.,;:!¡?¿\'"áéíóúÁÉÍÓÚñÑüÜ()\-+%#&/]{4,500}$', value)
         if not description_validation:
             raise serializers.ValidationError({"description": "Description must be between 4 and 500 characters long and contain only letters and spaces."})
         return value

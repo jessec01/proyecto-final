@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
-
 from userYC.serializer import UserYCSerializer
+from instructor.models import Instructor
 from .serializer import (InstructorSerializer,
 InstructorUpdateSerializer,
 DetailInstructorSerializer,LoginSerializer, InstructorListSerializer )
@@ -25,8 +25,9 @@ class ReadFormView(APIView):
     def post(self, request, *args, **kwargs):
         serializer=self.serializer_class(data=request.data)
         try: 
-            serializer.save(is_instructor=True, is_yogui=False, is_center_administrator=False)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save(is_instructor=True, is_yogui=False, is_center_administrator=False)
+            return Response({"id": user.id, "user": {"id": user.id}}, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except transaction.TransactionManagementError as e:
@@ -45,7 +46,6 @@ class ReadProfileView(APIView):
     
     serializer_class =InstructorSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
     
     def post(self, request, *args, **kwargs):
         user=request.user
@@ -61,7 +61,6 @@ class ReadProfileView(APIView):
 class InstructorDashboardView(viewsets.ModelViewSet):
     serializer_class = InstructorSerializer  # No olvides definir el serializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
     def get_queryset(self):
         # 1. Obtenemos el usuario autenticado que está haciendo la solicitud
         user = self.request.user

@@ -12,8 +12,7 @@ class CenterAdministrator(models.Model):
     photo_profile=models.ImageField(upload_to='admin_photos/', null=True, blank=True)
     role=models.CharField(max_length=50, null=True, blank=True)
     experience_years=models.PositiveIntegerField(null=True, blank=True)
-    statement=models.TextField(null=True, blank=True)
-    
+    welcome_message=models.TextField(null=True, blank=True)
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
     def activate_profile(self):
