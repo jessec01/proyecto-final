@@ -1,13 +1,12 @@
-# 🚀 [Nombre de tu Proyecto]
+# 🚀 Sistema de Gestión de Shalas o Centros de Yoga
 
-[![Licencia](https://img.shields.io/badge/Licencia-[Tipo_de_Licencia]-blue.svg)](LICENSE)
+[![Licencia](https://img.shields.io/badge/Licencia-Open%20Source-blue.svg)](LICENSE)
 [![Versión](https://img.shields.io/badge/Versión-1.0.0-green.svg)]()
 
 > El proyecto consiste en desarrollar un sistema de gestión para centros o shalas de yoga, que
 permita a los administradores gestionar clients (yoguis), clases, horarios, instructors, paquetes y pagos.
 Los clientes (yoguis) podrán registrarse, comprar paquetes, reservar clases y llevar control de su progreso
 mensual. 
-<img width="3378" height="105" alt="image" src="https://github.com/user-attachments/assets/01c42349-8759-4595-86f6-c2c574a0ff81" />
 
 ---
 
