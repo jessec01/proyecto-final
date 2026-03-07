@@ -2,7 +2,7 @@
 
 # 🚀 Sistema de Gestión de Shalas o Centros de Yoga
 
-[![Licencia](https://img.shields.io/badge/Licencia-Open%20Source-blue.svg)](LICENSE)
+[![Licencia](https://img.shields.io/badge/Licencia-GNU%20General%20Public%20License%20v3.0-blue.svg)](LICENSE)
 [![Versión](https://img.shields.io/badge/Versión-1.0.0-green.svg)]()
 
 > El proyecto consiste en desarrollar un sistema de gestión para centros o shalas de yoga, que permita a los administradores gestionar clientes (yoguis), clases, horarios, instructores, paquetes y pagos. Los clientes (yoguis) podrán registrarse, comprar paquetes, reservar clases y llevar control de su progreso mensual.
@@ -154,7 +154,7 @@ python django manage.py runserver
 
 ## 📄 Licencia
 
-Este proyecto es de código abierto y está bajo la licencia [MIT/Open Source]. Consulta el archivo `LICENSE` para más información.
+Este proyecto es de código abierto y está bajo la licencia [GNU General Public License v3.0]. Consulta el archivo `LICENSE` para más información.
 
 ---
 
