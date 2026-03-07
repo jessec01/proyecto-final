@@ -168,6 +168,4 @@ Este proyecto es de código abierto y está bajo la licencia [MIT/Open Source]. 
 
 ```
 
-¿Te gustaría que generemos también el contenido de un archivo `.gitignore` básico para evitar que se suban las carpetas de Python y tu archivo `.env` por accidente?
-
 ```
