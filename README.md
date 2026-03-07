@@ -136,7 +136,7 @@ pip install -r requirements.txt
 Para iniciar el sistema, ejecuta el comando principal:
 
 ```bash
-python django manage.py runserver
+python  manage.py runserver
 
 ```
 
